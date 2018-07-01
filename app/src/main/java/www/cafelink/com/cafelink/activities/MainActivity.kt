@@ -1,15 +1,13 @@
 package www.cafelink.com.cafelink.activities
 
-import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.util.AttributeSet
-import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 import www.cafelink.com.cafelink.R
 import www.cafelink.com.cafelink.fragments.MapsFragment
+import www.cafelink.com.cafelink.fragments.MessageFragment
 import www.cafelink.com.cafelink.fragments.NotificationFragment
 import www.cafelink.com.cafelink.fragments.ProfileFragment
 
@@ -22,8 +20,12 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_explore -> {
                 replaceFragment(MapsFragment(), getString(R.string.title_explore))
             }
-            R.id.navigation_notifications -> {
-                replaceFragment(NotificationFragment(), getString(R.string.title_notifications))
+            // TODO: add the notifications fragment
+//            R.id.navigation_notifications -> {
+//                replaceFragment(NotificationFragment(), getString(R.string.title_notifications))
+//            }
+            R.id.navigation_messages -> {
+                replaceFragment(MessageFragment(), getString(R.string.title_messages))
             }
             R.id.navigation_profile -> {
                 replaceFragment(ProfileFragment(), getString(R.string.title_profile))

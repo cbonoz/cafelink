@@ -15,5 +15,6 @@
     <string name="title_profile">Profile</string>
     <string name="title_explore">Explore</string>
     <string name="location_required">Location Permission is required</string>
+    <string name="title_messages">Messages</string>
 
 </resources>

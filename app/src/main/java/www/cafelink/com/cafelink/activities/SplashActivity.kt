@@ -11,6 +11,7 @@ import www.cafelink.com.cafelink.BuildConfig
 import www.cafelink.com.cafelink.CafeApplication
 import www.cafelink.com.cafelink.R
 import www.cafelink.com.cafelink.util.PrefManager
+import www.cafelink.com.cafelink.util.UserSessionManager
 
 import javax.inject.Inject
 
@@ -21,7 +22,7 @@ import javax.inject.Inject
 class SplashActivity : AwesomeSplash() {
 
     @Inject
-    lateinit var prefManager: PrefManager
+    lateinit var userSessionManager: UserSessionManager
 
     //DO NOT OVERRIDE onCreate()!
     //if you need to start some services do it in initSplash()!
@@ -64,6 +65,7 @@ class SplashActivity : AwesomeSplash() {
     override fun animationsFinished() {
         // Transit to another activity here or perform other actions.
 
+        // TODO: replace with check of logged in user and redirect to login - for now using deviceId.
 //        val token = prefManager.getString("token", null)
 //        val intent: Intent
 //        if (token != null) {
@@ -71,6 +73,7 @@ class SplashActivity : AwesomeSplash() {
 //        } else {
 //            intent = Intent(this, LoginActivity::class.java)
 //        }
+        userSessionManager.setLoggedInUserId(this)
 
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

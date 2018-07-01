@@ -1,5 +1,5 @@
 package www.cafelink.com.cafelink.models
 
-class CafeNotification(val id: String, val cafeName: String, val message: String, val timestamp: Long) {
+data class CafeNotification(val id: String,  val userId: String, val cafeName: String, val message: String, val timestamp: Long) {
 
 }

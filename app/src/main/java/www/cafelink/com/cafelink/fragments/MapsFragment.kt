@@ -37,6 +37,8 @@ import www.cafelink.com.cafelink.R
 // https://developers.facebook.com/docs/places/android/search
 class MapsFragment : Fragment(), OnMapReadyCallback, GraphRequest.Callback {
 
+    private var requestingLocationUpdates: Boolean = false
+
     private lateinit var mMap: GoogleMap
     private lateinit var locationCallback: LocationCallback
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -65,6 +67,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GraphRequest.Callback {
             }
         }
     }
+
+    // Open the cafe message fragment when the user clicks on a cafe marker.
+    private fun goToCafeMessageFragment() {
+
+    }
+
 
     private fun makePlaceSearchRequest() {
         PlaceManager.newPlaceSearchRequest(createSearchRequest(searchMeterRadius), object : PlaceManager.OnRequestReadyCallback {
@@ -118,11 +126,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GraphRequest.Callback {
         stopLocationUpdates()
     }
 
-    private var requestingLocationUpdates: Boolean = false
+    override fun onStop() {
+        super.onStop()
+        stopLocationUpdates()
+    }
 
     override fun onResume() {
         super.onResume()
-        if (requestingLocationUpdates) startLocationUpdates()
+        if (requestingLocationUpdates) {
+            startLocationUpdates()
+        }
     }
 
     private fun setupLocationUpdates() {

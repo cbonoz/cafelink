@@ -10,6 +10,7 @@ import javax.inject.Singleton
 
 import dagger.Module
 import dagger.Provides
+import www.cafelink.com.cafelink.util.UserSessionManager
 
 
 @Module
@@ -25,6 +26,12 @@ class CafeModule(private val mApplication: CafeApplication) {
     @Singleton
     internal fun providesGson(): Gson {
         return Gson()
+    }
+
+    @Provides
+    @Singleton
+    internal fun providesUserSessionManager(prefManager: PrefManager): UserSessionManager {
+        return UserSessionManager(prefManager)
     }
 
     @Provides

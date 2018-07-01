@@ -6,19 +6,38 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import www.cafelink.com.cafelink.CafeApplication
 
 import www.cafelink.com.cafelink.R
+import www.cafelink.com.cafelink.util.CafeService
+import www.cafelink.com.cafelink.util.UserSessionManager
+import javax.inject.Inject
 
 /**
- * A simple [Fragment] subclass.
- *
+ * Fragment containing user information for the current app user.
  */
 class ProfileFragment : Fragment() {
+
+    @Inject
+    lateinit var cafeService: CafeService
+    @Inject
+    lateinit var userSessionManager: UserSessionManager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        CafeApplication.injectionComponent.inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        val v = inflater.inflate(R.layout.fragment_profile, container, false)
+        fetchUserInfo()
+        return v
+    }
+
+    private fun fetchUserInfo() {
+        cafeService.getUserInfoUrl(userId = userSessionManager.getLoggedInUserId())
     }
 
 
