@@ -1,6 +1,8 @@
 *.iml
 .gradle
 .idea
+server/node_modules
+server/node_modules/
 gradle.properties
 /local.properties
 /.idea/libraries

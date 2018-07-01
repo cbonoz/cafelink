@@ -1,0 +1,23 @@
+{
+  "name": "cafelink-server",
+  "version": "1.0.0",
+  "description": "cafelink nodejs server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cafelink",
+    "nodejs",
+    "android",
+    "networking",
+    "app"
+  ],
+  "author": "Chris Buonocore",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "node-pg": "^1.0.1"
+  }
+}
