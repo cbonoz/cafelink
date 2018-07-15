@@ -3,6 +3,7 @@
 .idea
 server/node_modules
 server/node_modules/
+app/google-services.json
 gradle.properties
 /local.properties
 /.idea/libraries
