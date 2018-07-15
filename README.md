@@ -8,13 +8,8 @@ Cafelink
 Android App for connecting with other entrepreneurs at nearby cafes.
 
 
-### User Flow
+### App User Flow
 
 <img src="screenshots/cafelink_flowchart.png" width="600"/>
 
-
-### Screenshots
-
-
-### Dev Notes
 
