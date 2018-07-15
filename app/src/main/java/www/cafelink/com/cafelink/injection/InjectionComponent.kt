@@ -5,9 +5,7 @@ import javax.inject.Singleton
 import dagger.Component
 import www.cafelink.com.cafelink.activities.MainActivity
 import www.cafelink.com.cafelink.activities.SplashActivity
-import www.cafelink.com.cafelink.fragments.CafeMessageFragment
-import www.cafelink.com.cafelink.fragments.MessageFragment
-import www.cafelink.com.cafelink.fragments.ProfileFragment
+import www.cafelink.com.cafelink.fragments.*
 import www.cafelink.com.cafelink.injection.CafeModule
 
 @Singleton
@@ -20,9 +18,10 @@ interface InjectionComponent {
     fun inject(activity: SplashActivity)
     fun inject(cafeMessageFragment: CafeMessageFragment)
     fun inject(messageFragment: MessageFragment)
-    fun inject(profileFragment: ProfileFragment) {
+    fun inject(profileFragment: ProfileFragment)
 
-    }
+    fun inject(cafeConversationFragment: CafeConversationFragment)
+    fun inject(conversationFragment: ConversationFragment)
 
     // Fragments
 //    fun inject(favoritesFragment: FavoritesFragment)

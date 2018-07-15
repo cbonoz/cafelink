@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "104100481863",
+    "firebase_url": "https://cafe-link.firebaseio.com",
+    "project_id": "cafe-link",
+    "storage_bucket": "cafe-link.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:104100481863:android:68ab2c7a0c16f822",
+        "android_client_info": {
+          "package_name": "www.cafelink.com.cafelink"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "104100481863-4o3evupqdnl0cbujm9pajt45va2i7i0k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA21MJaaHGJJmr88d5VsGmtWPkSsCqcoHQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

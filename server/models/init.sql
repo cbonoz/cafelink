@@ -6,10 +6,21 @@ CREATE DATABASE cafe;
 
 \c cafe;
 
-
-CREATE TABLE users (
+CREATE TABLE user (
   ID VARCHAR PRIMARY KEY,
-  email VARCHAR NOT NULL,
-  address VARCHAR,
   username VARCHAR(16),
+);
+
+CREATE TABLE conversation {
+  ID VARCHAR PRIMARY KEY,
+  cafeid VARCHAR NOT NULL
+};
+
+CREATE TABLE msg (
+  ID VARCHAR PRIMARY KEY,
+  userid VARCHAR NOT NULL references user(ID),
+  conversationid VARCHAR NOT NULL references conversation(ID),
+  cafeid VARCHAR NOT NULL, -- set by facebook api.
+  body VARCHAR,
+  timereported bigint NOT NULL,
 );

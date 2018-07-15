@@ -1,11 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const http = require('http');
-const https = require('https');
 const pg = require('pg');
-const path = require('path');
-
 
 const dbUser = process.env.ADMIN_DB_USER;
 const dbPass = process.env.ADMIN_DB_PASS;
@@ -17,7 +13,7 @@ const pool = new pg.Pool({
     connectionString: connectionString
 });
 
-
+const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -36,8 +32,64 @@ app.get('/api/hello', (req, res) => {
     return res.json("hello world");
 });
 
+app.get('/api/info/user/:userId', (req, res) => {
+    const userId = req.params.userId;
+    pool.query(query, (err, result) => {
+        if (err) {
+            console.error('postVote error', err);
+            return res.status(500).json(err);
+        }
 
-// DB Connection and Server start //
+        const rows = result.rows;
+        return res.json(rows.length > 0);
+    });
+});
+
+app.get('/api/conversations/user/:userId', (req, res) => {
+    const userId = req.params.userId;
+    pool.query(query, (err, result) => {
+        if (err) {
+            console.error('postVote error', err);
+            return res.status(500).json(err);
+        }
+
+        const rows = result.rows;
+        return res.json(rows.length > 0);
+    });
+});
+
+app.get('/api/conversations/cafe/:cafeId', (req, res) => {
+    const cafeId = req.params.cafeId;
+    pool.query(query, (err, result) => {
+        if (err) {
+            console.error('postVote error', err);
+            return res.status(500).json(err);
+        }
+
+        console.error('postVote success', checkVoteQuery, result);
+        const rows = result.rows;
+        return res.json(rows.length > 0);
+    });
+});
+
+
+app.post('/api/message', (req, res) => {
+    const body = req.body;
+    // const query = `INSERT` ...
+    pool.query(query, (err, result) => {
+        console.log('issues', err, result);
+        if (err) {
+            console.error('issues', err);
+            return res.status(500).json(err)
+        }
+        // Return the rows that lie within the bounds of the map view.
+        return res.json(result.rows);
+    });
+});
+
+/******/
+/* DB Connection and Server start */
+/******/
 
 pool.connect((err, client, done) => {
     if (err) {

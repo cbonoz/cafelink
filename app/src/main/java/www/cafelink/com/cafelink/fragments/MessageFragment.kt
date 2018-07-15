@@ -10,12 +10,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import net.idik.lib.slimadapter.SlimAdapter
 import www.cafelink.com.cafelink.CafeApplication
 
 import www.cafelink.com.cafelink.R
 import www.cafelink.com.cafelink.models.CafeMessage
 import www.cafelink.com.cafelink.util.CafeService
+import www.cafelink.com.cafelink.util.Datastore
 import www.cafelink.com.cafelink.util.UserSessionManager
 import javax.inject.Inject
 
@@ -34,6 +38,8 @@ class MessageFragment : Fragment() {
     @Inject
     lateinit var cafeService: CafeService
     @Inject
+    lateinit var datastore: Datastore
+    @Inject
     lateinit var userSessionManager: UserSessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,15 +52,24 @@ class MessageFragment : Fragment() {
         // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.fragment_message, container, false)
         setupMessageList(v)
-        fetchMessages()
+        fetchMessagesForConversation()
         return v
     }
 
-    private fun fetchMessages() {
-//        cafeService.getUserMessagesUrl(userId = "").httpGet()
-        adapter.updateData(data)
-        adapter.notifyDataSetChanged()
-    }
+    private fun fetchMessagesForConversation() {
+        datastore.conversationDatabase.child("conversationId").equalTo(userSessionManager.getLoggedInUserId()).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                adapter.updateData(data)
+                adapter.notifyDataSetChanged()
+            }
+
+        })
+
+        }
 
     private fun setupMessageList(v: View) {
         recyclerView = v.findViewById<RecyclerView>(R.id.recyler_view).apply {

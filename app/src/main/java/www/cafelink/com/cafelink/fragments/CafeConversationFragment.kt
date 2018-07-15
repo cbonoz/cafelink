@@ -25,14 +25,15 @@ import javax.inject.Inject
 
 
 /**
- * View all the messages for a given cafe.
- * Each message is it's own thread, where the user can click one of two buttons for each row.
+ * View all the conversations for a given cafe.
+ * User can start a new conversation, view existing conversations, and contribute to existing conversations.
+ * Each conversation is it's own thread, where the user can click  a conversation
  *  View messages: view all the messages
  *  Reply: add a message to the thread
  *
  * Hitting back will take the user back to the maps fragment.
  */
-class CafeMessageFragment : Fragment() {
+class CafeConversationFragment : Fragment() {
 
     private lateinit var adapter: SlimAdapter
     private lateinit var layoutManager: LinearLayoutManager
@@ -56,14 +57,14 @@ class CafeMessageFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.fragment_message, container, false)
-        setupMessageList(v)
-        fetchMessages("")
+        setupConversationList(v)
+        fetchConversationsForCafe("")
         return v
     }
 
-    private fun fetchMessages(cafeId: String) {
+    private fun fetchConversationsForCafe(cafeId: String) {
 //        cafeService.getCafeMessagesUrl(cafeId = "").httpGet()
-        datastore.messageDatabase.child("conversationId").equalTo(cafeId).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
+        datastore.conversationDatabase.child("cafeId").equalTo(cafeId).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
@@ -76,7 +77,7 @@ class CafeMessageFragment : Fragment() {
         })
     }
 
-    private fun setupMessageList(v: View) {
+    private fun setupConversationList(v: View) {
         recyclerView = v.findViewById<RecyclerView>(R.id.recyler_view).apply {
             this.layoutManager = LinearLayoutManager(activity as Context, LinearLayoutManager.VERTICAL, false)
         }

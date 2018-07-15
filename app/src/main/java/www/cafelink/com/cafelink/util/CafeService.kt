@@ -17,16 +17,16 @@ class CafeService(private val prefManager: PrefManager) {
         return "${SERVER_URL}/api/message"
     }
 
-    fun getCafeMessagesUrl(cafeId: String): String {
-        return "${SERVER_URL}/api/cafe/messages/${cafeId}"
+    fun getCafeConversationsUrl(cafeId: String): String {
+        return "${SERVER_URL}/api/conversations/cafe/${cafeId}"
     }
 
-    fun getUserMessagesUrl(userId: String): String {
-        return "${SERVER_URL}/api/user/messages/${userId}"
+    fun getUserConversationsUrl(userId: String): String {
+        return "${SERVER_URL}/api/conversations/user/${userId}"
     }
 
     fun getUserInfoUrl(userId: String): String {
-        return "${SERVER_URL}/api/user/info/${userId}"
+        return "${SERVER_URL}/api/info/user/${userId}"
     }
 
     companion object {

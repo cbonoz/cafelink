@@ -10,6 +10,7 @@ import javax.inject.Singleton
 
 import dagger.Module
 import dagger.Provides
+import www.cafelink.com.cafelink.util.Datastore
 import www.cafelink.com.cafelink.util.UserSessionManager
 
 
@@ -38,6 +39,12 @@ class CafeModule(private val mApplication: CafeApplication) {
     @Singleton
     internal fun providesCafeService(prefManager: PrefManager): CafeService {
         return CafeService(prefManager)
+    }
+
+    @Provides
+    @Singleton
+    internal fun providesDatastore(): Datastore {
+        return Datastore()
     }
 
     @Provides

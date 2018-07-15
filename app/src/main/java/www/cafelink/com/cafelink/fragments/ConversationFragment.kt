@@ -25,14 +25,9 @@ import javax.inject.Inject
 
 
 /**
- * View all the messages for a given cafe.
- * Each message is it's own thread, where the user can click one of two buttons for each row.
- *  View messages: view all the messages
- *  Reply: add a message to the thread
- *
- * Hitting back will take the user back to the maps fragment.
+ * Contains the history of all messages/threads the user has participated in.
  */
-class CafeMessageFragment : Fragment() {
+class ConversationFragment : Fragment() {
 
     private lateinit var adapter: SlimAdapter
     private lateinit var layoutManager: LinearLayoutManager
@@ -43,9 +38,9 @@ class CafeMessageFragment : Fragment() {
     @Inject
     lateinit var cafeService: CafeService
     @Inject
-    lateinit var userSessionManager: UserSessionManager
-    @Inject
     lateinit var datastore: Datastore
+    @Inject
+    lateinit var userSessionManager: UserSessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,14 +51,13 @@ class CafeMessageFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.fragment_message, container, false)
-        setupMessageList(v)
-        fetchMessages("")
+        setupConversationList(v)
+        fetchConversationsForUser()
         return v
     }
 
-    private fun fetchMessages(cafeId: String) {
-//        cafeService.getCafeMessagesUrl(cafeId = "").httpGet()
-        datastore.messageDatabase.child("conversationId").equalTo(cafeId).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
+    private fun fetchConversationsForUser() {
+        datastore.conversationDatabase.child("userId").equalTo(userSessionManager.getLoggedInUserId()).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
@@ -74,9 +68,10 @@ class CafeMessageFragment : Fragment() {
             }
 
         })
-    }
 
-    private fun setupMessageList(v: View) {
+        }
+
+    private fun setupConversationList(v: View) {
         recyclerView = v.findViewById<RecyclerView>(R.id.recyler_view).apply {
             this.layoutManager = LinearLayoutManager(activity as Context, LinearLayoutManager.VERTICAL, false)
         }
