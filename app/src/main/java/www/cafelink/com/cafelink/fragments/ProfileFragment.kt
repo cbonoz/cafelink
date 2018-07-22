@@ -6,9 +6,11 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import www.cafelink.com.cafelink.CafeApplication
 
 import www.cafelink.com.cafelink.R
+import www.cafelink.com.cafelink.models.User
 import www.cafelink.com.cafelink.util.CafeService
 import www.cafelink.com.cafelink.util.Datastore
 import www.cafelink.com.cafelink.util.UserSessionManager
@@ -26,6 +28,8 @@ class ProfileFragment : Fragment() {
     @Inject
     lateinit var userSessionManager: UserSessionManager
 
+    private lateinit var me: User
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         CafeApplication.injectionComponent.inject(this)
@@ -35,20 +39,10 @@ class ProfileFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.fragment_profile, container, false)
-        fetchUserInfo(userSessionManager.getLoggedInUser().getId())
+        me = userSessionManager.getLoggedInUser()
+        val userText = v.findViewById<TextView>(R.id.userTextValue)
+        userText.text = me.userName
         return v
     }
 
-    private fun fetchUserInfo(userId: String) {
-//        datastore.userDatabase.child("userId").equalTo(userId).addValueEventListener(object : ValueEventListener {
-//            override fun onCancelled(p0: DatabaseError) {
-//                Timber.d("onCancelled")
-//            }
-//
-//            override fun onDataChange(p0: DataSnapshot) {
-//                Timber.d("onData: ${p0}")
-//            }
-//
-//        })
-    }
 }

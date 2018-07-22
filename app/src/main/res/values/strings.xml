@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Cafe Link</string>
     <string name="facebook_app_id">229348411181281</string>
     <string name="facebook_client_token">44514f4789cd6c00cf1ef4862e0c70b7</string>
     <string name="title_activity_maps">Map</string>
@@ -21,5 +20,8 @@
     <string name="your_conversations">Your Conversations</string>
     <string name="conversation_fail">Could not find data for conversation</string>
     <string name="saving">Saving…</string>
+    <string name="cafelink">CafeLink</string>
+    <string name="app_info">CafeLink is a new way of networking at your favorite local cafes.
+        Share what you are working on, start discussions, and meet new people all from a single app.</string>
 
 </resources>
