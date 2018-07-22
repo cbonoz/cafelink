@@ -2,19 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/messageLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="32dp"
-    android:orientation="vertical">
+    android:layout_height="80dp"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight=".7"
+        android:padding="10dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/title"
         style="@style/Base.TextAppearance.AppCompat.Title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="30dp" />
 
     <TextView
         android:id="@+id/lastUpdated"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="30dp" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_weight=".3"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/messageCountText"
+        android:text="#"
+        android:textSize="@dimen/large_text"
+        android:layout_width="match_parent"
+        android:textStyle="bold"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:height="80dp"/>
+
+    </LinearLayout>
 </LinearLayout>

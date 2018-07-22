@@ -4,21 +4,10 @@ import android.graphics.Bitmap
 import com.github.bassaer.chatmessageview.model.IChatUser
 import java.util.*
 
-class User(var userName: String, var userId: String = UUID.randomUUID().toString(), var iconBitmap: Bitmap? = null, var iconUrl: String = "") : IChatUser {
-    override fun getIcon(): Bitmap? {
-        return iconBitmap
-    }
+class User(val name: String, val id: String = UUID.randomUUID().toString()) {
 
-    override fun setIcon(bmp: Bitmap) {
-        iconBitmap = bmp
-    }
-
-    override fun getId(): String {
-        return userId
-    }
-
-    override fun getName(): String? {
-        return userName
+    fun toIChatUser(bitmap: Bitmap): IChatUser {
+        return MyIChatUser(id, name, bitmap)
     }
 
 

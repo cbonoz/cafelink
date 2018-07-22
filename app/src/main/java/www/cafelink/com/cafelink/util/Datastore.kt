@@ -18,18 +18,17 @@ class Datastore(val gson: Gson) {
     val conversationDatabase = database.collection("conversations") // conversations
     // Contains 'CafeMessage' class objects as json (with id index).
     val messageDatabase = database.collection("messages") // messages for each conversation
-    // Contains 'User' class objects as json (with userId index).
+    // Contains 'User' class objects as json (with id index).
     val userDatabase = database.collection("users") // users in the app
 
 
-    fun writeMessage(cafeMessage: CafeMessage, listener: OnSuccessListener<in Void>, failureListener: OnFailureListener) {
+    fun toMessageMap(cafeMessage: CafeMessage) : Map<String, Any> {
         val cafeString = gson.toJson(cafeMessage)
-        val cafeMap: Map<String, Any> = gson.fromJson(cafeString, object : TypeToken<Map<String, Any>>(){}.type)
-        messageDatabase.document(cafeMessage.id).set(cafeMap).addOnSuccessListener(listener).addOnFailureListener(failureListener)
+        return gson.fromJson(cafeString, object : TypeToken<Map<String, Any>>(){}.type)
     }
 
-    fun writeConversation(conversation: Conversation, listener: OnSuccessListener<in Void>, failureListener: OnFailureListener) {
+    fun toConversationMap(conversation: Conversation) : Map<String, Any> {
         val conversationString = gson.toJson(conversation)
-        val conversationMap: Map<String, Any> = gson.fromJson(conversationString, object : TypeToken<Map<String, Any>>(){}.type)
+        return gson.fromJson(conversationString, object : TypeToken<Map<String, Any>>(){}.type)
     }
 }

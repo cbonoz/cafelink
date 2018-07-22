@@ -13,11 +13,11 @@ import timber.log.Timber
 import www.cafelink.com.cafelink.CafeApplication
 import www.cafelink.com.cafelink.R
 import www.cafelink.com.cafelink.fragments.message.MessagesFragment
-import www.cafelink.com.cafelink.models.CafeMessage
 import www.cafelink.com.cafelink.models.Conversation
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,7 +32,7 @@ abstract class AbstractConversationFragment : Fragment() {
 
     protected lateinit var adapter: SlimAdapter
     protected lateinit var layoutManager: LinearLayoutManager
-    protected val data: List<CafeMessage> = ArrayList()
+    protected val data: ArrayList<Conversation> = ArrayList()
 
     protected lateinit var recyclerView: RecyclerView
 
@@ -44,13 +44,14 @@ abstract class AbstractConversationFragment : Fragment() {
         CafeApplication.injectionComponent.inject(this)
     }
 
-    fun setupConversationList(v: View, recyclerView: RecyclerView) {
-        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss aa", Locale.getDefault())
+    fun setupConversationList(v: View) {
+        val sdf = SimpleDateFormat("M/dd/yyyy hh:mm:ss aa", Locale.getDefault())
         adapter = SlimAdapter.create()
                 .register<Conversation>(R.layout.item_conversation) { data, injector ->
                     val lastUpdatedDate = sdf.format(Date(data.lastUpdated))
                     injector.text(R.id.title, data.title)
-                            .text(R.id.lastUpdated, lastUpdatedDate)
+                            .text(R.id.lastUpdated, "Last Updated: $lastUpdatedDate")
+                            .text(R.id.messageCountText, data.messageCount)
                             .clicked(R.id.messageLayout) {
                                 Toast.makeText(activity, "clicked message: ${data.id}", Toast.LENGTH_LONG).show()
                                 Timber.d("Clicked conversation: $data")

@@ -10,23 +10,22 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
-import com.google.firebase.firestore.EventListener
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.DocumentChange
 import timber.log.Timber
 import www.cafelink.com.cafelink.CafeApplication
 import www.cafelink.com.cafelink.CafeApplication.Companion.CAFE_DATA
 
 import www.cafelink.com.cafelink.R
+import www.cafelink.com.cafelink.models.CafeMessage
 import www.cafelink.com.cafelink.models.Conversation
 import www.cafelink.com.cafelink.models.cafe.Data
 import www.cafelink.com.cafelink.util.Datastore
 import www.cafelink.com.cafelink.util.UserSessionManager
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 
 /**
@@ -66,7 +65,7 @@ class CafeConversationFragment : AbstractConversationFragment() {
         recyclerView = v.findViewById<RecyclerView>(R.id.recyler_view).apply {
             layoutManager = LinearLayoutManager(activity as Context, LinearLayoutManager.VERTICAL, false)
         }
-        setupConversationList(v, recyclerView)
+        setupConversationList(v)
         setupConversationFab(v, currentCafe)
         fetchConversationsForCafe(currentCafe.id)
 //        val conversationHeader = v.findViewById<TextView>(R.id.conversationHeaderText)
@@ -95,19 +94,23 @@ class CafeConversationFragment : AbstractConversationFragment() {
                         writing = true
                         // Successful - create the conversation thread.
                         val user = userSessionManager.getLoggedInUser()
+                        val userMap = HashMap<String, Boolean>()
+                        userMap[user.id] = true
                         val conversation = Conversation(
                                 UUID.randomUUID().toString(),
                                 conversationTitle,
                                 user,
-                                mapOf(Pair(user.getId(), true)),
+                                userMap,
                                 currentCafe.id,
-                                System.currentTimeMillis()
+                                System.currentTimeMillis(),
+                                0
                         )
 
                         Timber.d("Writing new conversation: ${conversation.id}")
+
                         datastore.conversationDatabase
                                 .document(conversation.id)
-                                .set(conversation)
+                                .set(datastore.toConversationMap(conversation))
                                 .addOnSuccessListener {
                                     Timber.d("Created conversation: $conversation")
                                     dialog.dismiss()
@@ -124,13 +127,28 @@ class CafeConversationFragment : AbstractConversationFragment() {
     }
 
     private fun fetchConversationsForCafe(cafeId: String) {
-        datastore.conversationDatabase.whereEqualTo("cafeId" ,cafeId).orderBy("lastUpdated")
-                .addSnapshotListener(object : EventListener<QuerySnapshot> {
-                    override fun onEvent(p0: QuerySnapshot?, p1: FirebaseFirestoreException?) {
-
+        data.clear()
+        datastore.conversationDatabase.whereEqualTo("cafeId", cafeId).orderBy("lastUpdated")
+                .addSnapshotListener { snapshots, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        Timber.e(firebaseFirestoreException, "error getting conversations for cafeId: %s", cafeId)
+                    } else {
+                        for (dc in snapshots!!.getDocumentChanges()) {
+                            val docData = dc.document.data
+                            when (dc.getType()) {
+                                DocumentChange.Type.ADDED -> {
+                                    // Append the entry to the conversation list view.
+                                    val conversation = gson.fromJson(gson.toJson(docData), Conversation::class.java)
+                                    data.add(conversation)
+                                    adapter.updateData(data)
+                                    adapter.notifyItemChanged(data.size - 1)
+                                }
+                                DocumentChange.Type.MODIFIED -> Timber.d("Modified conversation: %s", docData)
+                                DocumentChange.Type.REMOVED -> Timber.d("Removed conversation: %s", docData)
+                            }
+                        }
                     }
-
-        })
+                }
     }
 
 }

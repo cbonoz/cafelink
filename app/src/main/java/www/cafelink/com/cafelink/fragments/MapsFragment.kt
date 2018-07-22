@@ -35,6 +35,7 @@ import com.mapbox.geojson.Point
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.annotations.IconFactory
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
+import com.mapbox.mapboxsdk.annotations.MarkerViewOptions
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -428,14 +429,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             val iconFactory = IconFactory.getInstance(app!!);
 
             cafeResponse.data.map {
-                val icon = iconFactory.fromResource(R.drawable.blue_marker_view_64);
+                val icon = iconFactory.fromResource(R.drawable.blue_marker_view_40);
                 val options = MarkerOptions()
                         .position(LatLng(it.location.latitude, it.location.longitude))
-                        .setIcon(icon)
+                        .icon(icon)
                         .title(it.name)
                         .snippet(it.name)
 
-                cafeMap.put(it.name, it)
+                cafeMap[it.name] = it
 
                 mapboxMap.addMarker(options)
             }

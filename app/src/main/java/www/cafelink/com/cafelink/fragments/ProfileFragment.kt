@@ -11,7 +11,6 @@ import www.cafelink.com.cafelink.CafeApplication
 
 import www.cafelink.com.cafelink.R
 import www.cafelink.com.cafelink.models.User
-import www.cafelink.com.cafelink.util.CafeService
 import www.cafelink.com.cafelink.util.Datastore
 import www.cafelink.com.cafelink.util.UserSessionManager
 import javax.inject.Inject
@@ -39,7 +38,7 @@ class ProfileFragment : Fragment() {
         val v = inflater.inflate(R.layout.fragment_profile, container, false)
         me = userSessionManager.getLoggedInUser()
         val userText = v.findViewById<TextView>(R.id.userTextValue)
-        userText.text = me.userName
+        userText.text = me.name
         return v
     }
 

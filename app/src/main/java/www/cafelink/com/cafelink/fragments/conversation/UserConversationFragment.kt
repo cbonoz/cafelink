@@ -9,9 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.google.firebase.firestore.DocumentChange
+import timber.log.Timber
 import www.cafelink.com.cafelink.CafeApplication
 
 import www.cafelink.com.cafelink.R
+import www.cafelink.com.cafelink.models.Conversation
 import www.cafelink.com.cafelink.util.Datastore
 import www.cafelink.com.cafelink.util.UserSessionManager
 import javax.inject.Inject
@@ -40,8 +43,8 @@ class UserConversationFragment : AbstractConversationFragment() {
         recyclerView = v.findViewById<RecyclerView>(R.id.recyler_view).apply {
             this.layoutManager = LinearLayoutManager(activity as Context, LinearLayoutManager.VERTICAL, false)
         }
-        setupConversationList(v, recyclerView)
-        val userId = userSessionManager.getLoggedInUser().getId()
+        setupConversationList(v)
+        val userId = userSessionManager.getLoggedInUser().id
         fetchConversationsForUser(userId)
         val conversationHeader = v.findViewById<TextView>(R.id.conversationHeaderText)
         conversationHeader.text = getString(R.string.your_conversations)
@@ -49,19 +52,27 @@ class UserConversationFragment : AbstractConversationFragment() {
     }
 
     private fun fetchConversationsForUser(userId: String) {
-        // TODO: use participants
-//        datastore.conversationDatabase.child("userId").equalTo(userId).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
-//            override fun onCancelled(p0: DatabaseError) {
-//                Timber.d("onCancelled")
-//            }
-//
-//            override fun onDataChange(p0: DataSnapshot) {
-//                Timber.d("onData: ${p0}")
-//                adapter.updateData(data)
-//                adapter.notifyDataSetChanged()
-//            }
-//
-//        })
+        datastore.conversationDatabase.whereEqualTo("participants.${userId}", true).orderBy("lastUpdated")
+                .addSnapshotListener { snapshots, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        Timber.e(firebaseFirestoreException, "error getting conversations for userId: %s", userId)
+                    } else {
+                        for (dc in snapshots!!.getDocumentChanges()) {
+                            val docData = dc.document.data
+                            when (dc.getType()) {
+                                DocumentChange.Type.ADDED -> {
+                                    // Append the entry to the conversation list view.
+                                    val conversation = gson.fromJson(gson.toJson(docData), Conversation::class.java)
+                                    data.add(conversation)
+                                    adapter.updateData(data)
+                                    adapter.notifyItemChanged(data.size - 1)
+                                }
+                                DocumentChange.Type.MODIFIED -> Timber.d("Modified conversation: %s", docData)
+                                DocumentChange.Type.REMOVED -> Timber.d("Removed conversation: %s", docData)
+                            }
+                        }
+                    }
+                }
     }
 
 }

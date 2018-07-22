@@ -1,6 +1,8 @@
 package www.cafelink.com.cafelink.fragments.message
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -13,7 +15,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import com.github.bassaer.chatmessageview.model.Message
+import com.github.bassaer.chatmessageview.model.IChatUser
 import net.idik.lib.slimadapter.SlimAdapter
 import www.cafelink.com.cafelink.CafeApplication
 import www.cafelink.com.cafelink.R
@@ -25,9 +27,12 @@ import com.github.bassaer.chatmessageview.view.ChatView
 import com.google.gson.Gson
 import timber.log.Timber
 import www.cafelink.com.cafelink.models.Conversation
+import www.cafelink.com.cafelink.models.MyIChatUser
 import www.cafelink.com.cafelink.models.User
-import www.cafelink.com.cafelink.util.PrefManager
 import java.util.*
+import com.google.firebase.firestore.DocumentChange
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 /**
@@ -44,9 +49,12 @@ class MessagesFragment : Fragment() {
 
     lateinit var adapter: SlimAdapter
     lateinit var layoutManager: LinearLayoutManager
-    val data: List<CafeMessage> = ArrayList<CafeMessage>()
+    val data: ArrayList<CafeMessage> = ArrayList<CafeMessage>()
 
     lateinit var recyclerView: RecyclerView
+
+    lateinit var LEFT_ICON: Bitmap
+    lateinit var RIGHT_ICON: Bitmap
 
     @Inject
     lateinit var gson: Gson
@@ -55,12 +63,18 @@ class MessagesFragment : Fragment() {
     @Inject
     lateinit var datastore: Datastore
 
-    lateinit var me: User
+    lateinit var currentUser: User
+    lateinit var currentIChatUser: IChatUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         CafeApplication.injectionComponent.inject(this)
-        me = userSessionManager.getLoggedInUser()
+
+        LEFT_ICON = BitmapFactory.decodeResource(resources, R.drawable.face_1)
+        RIGHT_ICON = BitmapFactory.decodeResource(resources, R.drawable.face_2)
+
+        currentUser = userSessionManager.getLoggedInUser()
+        currentIChatUser = currentUser.toIChatUser(RIGHT_ICON)
     }
 
     private lateinit var currentConversation: Conversation
@@ -89,28 +103,33 @@ class MessagesFragment : Fragment() {
 
     fun fetchMessagesForConversation(v: View?, conversation: Conversation) {
         Timber.d("fetchMessagesForConversation: %s", conversation)
-//        datastore.conversationDatabase.child("conversationId").equalTo(currentConversation.id).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
-//            override fun onCancelled(p0: DatabaseError) {
-//                Timber.d("onCancelled")
-//                setupMessageList(v!!, ArrayList())
-//            }
-//
-//            override fun onDataChange(p0: DataSnapshot) {
-//                Timber.d("onData: ${p0}")
-////                adapter.updateData(data)
-////                adapter.notifyDataSetChanged()
-//                setupMessageList(v!!, ArrayList())
-//
-//                // TODO: set the currentConversation message component with the retrieved messages.
-//
-//            }
-//        })
-
+        data.clear()
+        datastore.messageDatabase.whereEqualTo("conversationId", conversation.id).orderBy("lastUpdated")
+                .addSnapshotListener { snapshots, firebaseFirestoreException ->
+                    if (firebaseFirestoreException != null) {
+                        Timber.e(firebaseFirestoreException, "error getting messages for conversationId: %s", conversation.id)
+                    } else {
+                        for (dc in snapshots!!.getDocumentChanges()) {
+                            val docData = dc.document.data
+                            when (dc.getType()) {
+                                DocumentChange.Type.ADDED -> {
+                                    // Append the entry to the conversation list view.
+                                    val message = gson.fromJson(gson.toJson(docData), CafeMessage::class.java)
+                                    data.add(message)
+                                    adapter.updateData(data)
+                                    adapter.notifyItemChanged(data.size - 1)
+                                }
+                                DocumentChange.Type.MODIFIED -> Timber.d("Modified message: %s", docData)
+                                DocumentChange.Type.REMOVED -> Timber.d("Removed message: %s", docData)
+                            }
+                        }
+                    }
+                }
     }
 
     private var writing: Boolean = false
 
-    fun setupMessageList(v: View, messages: List<Message>) {
+    fun setupMessageList(v: View, cafeMessages: List<CafeMessage>) {
         mChatView = v.findViewById(R.id.chatMessageView)
 
         //Set UI parameters if you need
@@ -131,12 +150,14 @@ class MessagesFragment : Fragment() {
 
         val currentUser = userSessionManager.getLoggedInUser()
 
-        // Populate the existing messages list.
-        messages.map {
-            if (it.user.getId() == currentUser.getId()) {
-                mChatView.send(it)
+        // Populate the existing cafeMessages list.
+        cafeMessages.map {
+            if (it.userId == currentUser.id) {
+                val msg = it.toMessage(MyIChatUser(it.userId, it.userName, RIGHT_ICON), it.message, true)
+                mChatView.send(msg)
             } else {
-                mChatView.receive(it)
+                val msg = it.toMessage(MyIChatUser(it.userId, it.userName, LEFT_ICON), it.message, false)
+                mChatView.receive(msg)
             }
         }
 
@@ -151,17 +172,12 @@ class MessagesFragment : Fragment() {
             } else if (!writing) {
                 writing = true
 
-                val message = Message.Builder()
-                        .setUser(me)
-                        .setRight(true)
-                        .setText(text)
-                        .hideIcon(true)
-                        .build()
+
                 val cafeMessage = CafeMessage(
-                        UUID.randomUUID().toString(),
-                        message,
-                        me.getId(),
-                        currentConversation.id
+                        currentUser.name,
+                        currentUser.id,
+                        currentConversation.id,
+                        text
                 )
 
                 datastore.messageDatabase
@@ -170,15 +186,20 @@ class MessagesFragment : Fragment() {
                         .addOnSuccessListener {
                             Timber.d("Created message: $cafeMessage")
                             // Update the conversation participants list.
+                            val updateMap = HashMap<String, Any>()
+                            updateMap["participants.${cafeMessage.userId}"] = true
+                            updateMap["messageCount"] = currentConversation.messageCount + 1
                             datastore.conversationDatabase
                                     .document(currentConversation.id)
-                                    .update("participants.${cafeMessage.userId}", true)
+                                    .update(updateMap)
                                     .addOnSuccessListener {
-                                        Timber.d("Added participant: ${cafeMessage.userId}")
+                                        Timber.d("Added message for user: ${cafeMessage.userId}")
                                         // Send to chat view.
-                                        mChatView.send(message)
+                                        val msg = cafeMessage.toMessage(currentIChatUser, text, true)
+                                        mChatView.send(msg)
                                         // Reset edit text.
                                         mChatView.inputText = ""
+                                        currentConversation.messageCount += 1
                                         writing = false
                                     }
                                     .addOnFailureListener {
