@@ -21,11 +21,9 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField 'String', 'GoogleAPIKEY', Cafelink_GoogleKey
             buildConfigField 'String', 'MapboxKey', Cafelink_MapboxKey
         }
         release {
-            buildConfigField 'String', 'GoogleAPIKEY', Cafelink_GoogleKey
             buildConfigField 'String', 'MapboxKey', Cafelink_MapboxKey
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -33,7 +31,7 @@ android {
     }
 
     defaultConfig {
-        manifestPlaceholders = [googleKey: Cafelink_GoogleKey]
+        manifestPlaceholders = [mapboxKey: Cafelink_MapboxKey]
     }
 }
 

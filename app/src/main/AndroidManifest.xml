@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="www.cafelink.com.cafelink">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -39,9 +40,6 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/. 
         -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="${googleKey}" />
 
         <activity
             android:name=".activities.MainActivity"
