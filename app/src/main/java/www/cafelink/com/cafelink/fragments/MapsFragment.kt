@@ -27,7 +27,6 @@ import com.facebook.places.model.PlaceFields
 import com.facebook.places.model.PlaceSearchRequestParams
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
 import com.google.gson.Gson
 import com.mapbox.geojson.Feature
 import com.mapbox.geojson.FeatureCollection
@@ -51,12 +50,14 @@ import timber.log.Timber
 import www.cafelink.com.cafelink.BuildConfig
 import www.cafelink.com.cafelink.CafeApplication
 import www.cafelink.com.cafelink.CafeApplication.Companion.CAFE_DATA
+import www.cafelink.com.cafelink.CafeApplication.Companion.LAST_LOCATION_LOC
 import www.cafelink.com.cafelink.CafeApplication.Companion.MY_PERMISSIONS_ACCESS_FINE_LOCATION
 import www.cafelink.com.cafelink.CafeApplication.Companion.app
 import www.cafelink.com.cafelink.R
 import www.cafelink.com.cafelink.fragments.conversation.CafeConversationFragment
 import www.cafelink.com.cafelink.models.cafe.CafeResponse
 import www.cafelink.com.cafelink.models.cafe.Data
+import www.cafelink.com.cafelink.util.PrefManager
 import javax.inject.Inject
 
 // https://developer.android.com/training/location/receive-location-updates
@@ -79,11 +80,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
     @Inject
     lateinit var gson: Gson
+    @Inject
+    lateinit var prefManager: PrefManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         CafeApplication.injectionComponent.inject(this)
         Mapbox.getInstance(activity as Context, BuildConfig.MapboxKey)
+        fusedLocationClient = FusedLocationProviderClient(activity as Context)
         Timber.d("onCreate")
     }
 
@@ -92,23 +96,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         mapView = v.findViewById<MapView>(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this)
-        initSearchFab(v);
-        initLocationClient()
+        initFabButtons(v);
         return v
-    }
-
-    private fun initLocationClient() {
-        fusedLocationClient = FusedLocationProviderClient(activity as Context)
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult?) {
-                locationResult ?: return
-                for (location in locationResult.locations) {
-                    Timber.d("Detected Location: ${location}")
-                    // Update UI with location data
-                    // ...
-                }
-            }
-        }
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -184,7 +173,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
     private var mapReady: Boolean = false
 
-    private fun initSearchFab(view: View) {
+    private fun initFabButtons(view: View) {
         val searchFab = view.findViewById<FloatingActionButton>(R.id.fab_location_search);
         searchFab.setOnClickListener { it: View ->
             if (mapReady) {
@@ -200,8 +189,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 Toast.makeText(activity, "Wait for map to finish loading...", Toast.LENGTH_SHORT).show()
             };
         }
-    }
 
+        val locationFab = view.findViewById<FloatingActionButton>(R.id.fab_current_location);
+        locationFab.setOnClickListener { it: View ->
+            if (mapReady) {
+               searchWithCurrentLocation()
+            } else {
+                Toast.makeText(activity, "Wait for map to finish loading...", Toast.LENGTH_SHORT).show()
+            };
+        }
+    }
 
     // Open the cafe message fragment when the user clicks on a cafe marker.
     private fun goToCafeMessageFragment(cafeData: Data?) {
@@ -229,10 +226,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             val graphRequest = PlaceManager.newPlaceSearchRequestForLocation(searchRequest, location)
             graphRequest.callback = PlaceSearchRequestCallback(gson)
             graphRequest.executeAsync()
+            prefManager.saveJson(LAST_LOCATION_LOC, location)
         } else {
             Timber.d("search without location")
             PlaceManager.newPlaceSearchRequest(searchRequest, PlaceSearchRequestCallback(gson))
         }
+
     }
 
     private fun setupLocationUpdates() {
@@ -258,7 +257,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             }
         } else {
             // Permission has already been granted
-            getLastLocation()
+            val lastLocation = prefManager.getJson(LAST_LOCATION_LOC, LatLng::class.java, LatLng())
+            if (lastLocation.latitude == 0.0 && lastLocation.longitude == 0.0) {
+                searchWithCurrentLocation()
+            } else {
+                updatePositionAndSearch(lastLocation)
+            }
         }
     }
 
@@ -309,7 +313,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 if ((grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    getLastLocation()
+                    searchWithCurrentLocation()
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -325,13 +329,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun getLastLocation() {
+    private fun searchWithCurrentLocation(force: Boolean = false) {
         if (!mapReady) {
             return
         }
 
         try {
-            Timber.d("getLastLocation")
+            Timber.d("searchWithCurrentLocation")
+
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 // Got last known location. In some rare situations this can be null.
                 if (location == null) {

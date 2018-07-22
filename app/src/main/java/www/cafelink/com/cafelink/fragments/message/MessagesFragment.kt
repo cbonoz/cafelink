@@ -26,6 +26,7 @@ import com.google.gson.Gson
 import timber.log.Timber
 import www.cafelink.com.cafelink.models.Conversation
 import www.cafelink.com.cafelink.models.User
+import www.cafelink.com.cafelink.util.PrefManager
 import java.util.*
 
 

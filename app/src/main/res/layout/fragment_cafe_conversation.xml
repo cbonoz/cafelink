@@ -1,23 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
+<FrameLayout android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <TextView
-        android:layout_gravity="center"
-        android:id="@+id/conversationHeaderText"
-        android:text="Conversations"
-        android:textSize="@dimen/med_text"
-        android:layout_margin="10dp"
-        android:textAlignment="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyler_view"
@@ -34,7 +20,4 @@
             app:backgroundTint="@color/primary"
             app:srcCompat="@drawable/zzz_pencil" />
 
-    </FrameLayout>
-
-
-</LinearLayout>
+</FrameLayout>

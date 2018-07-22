@@ -56,6 +56,7 @@ class CafeConversationFragment : AbstractConversationFragment() {
         val cafeDataString: String = args!!.getString(CAFE_DATA)
         currentCafe = gson.fromJson(cafeDataString, Data::class.java)
         Timber.d("currentCafe: $currentCafe")
+        activity!!.title = "Conversations: ${currentCafe.name}"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -68,8 +69,8 @@ class CafeConversationFragment : AbstractConversationFragment() {
         setupConversationList(v, recyclerView)
         setupConversationFab(v, currentCafe)
         fetchConversationsForCafe(currentCafe.id)
-        val conversationHeader = v.findViewById<TextView>(R.id.conversationHeaderText)
-        conversationHeader.text = currentCafe.name
+//        val conversationHeader = v.findViewById<TextView>(R.id.conversationHeaderText)
+//        conversationHeader.text = currentCafe.name
         return v
     }
 

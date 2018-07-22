@@ -1,7 +1,5 @@
 package www.cafelink.com.cafelink.models
 
-import java.util.*
-
 data class Conversation(val id: String,
                         val title: String,
                         val createdBy: User,
