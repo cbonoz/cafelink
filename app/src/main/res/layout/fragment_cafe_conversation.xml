@@ -17,7 +17,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyler_view"
@@ -32,7 +32,7 @@
             android:layout_margin="16dp"
             android:tint="@android:color/white"
             app:backgroundTint="@color/primary"
-            app:srcCompat="@android:drawable/ic_search_category_default" />
+            app:srcCompat="@drawable/zzz_pencil" />
 
     </FrameLayout>
 

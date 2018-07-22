@@ -22,14 +22,17 @@ import www.cafelink.com.cafelink.util.Datastore
 import www.cafelink.com.cafelink.util.UserSessionManager
 import javax.inject.Inject
 import com.github.bassaer.chatmessageview.view.ChatView
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.gson.Gson
 import timber.log.Timber
 import www.cafelink.com.cafelink.models.Conversation
 import www.cafelink.com.cafelink.models.User
+import java.util.*
 
 
 /**
- * View all the messages for a given conversation.
+ * View all the messages for a given currentConversation.
  * Each message is it's own thread, where the user can click one of two buttons for each row.
  *  View messages: view all the messages
  *  Reply: add a message to the thread
@@ -42,7 +45,7 @@ class MessagesFragment : Fragment() {
 
     lateinit var adapter: SlimAdapter
     lateinit var layoutManager: LinearLayoutManager
-    val data: List<CafeMessage> = ArrayList()
+    val data: List<CafeMessage> = ArrayList<CafeMessage>()
 
     lateinit var recyclerView: RecyclerView
 
@@ -61,6 +64,8 @@ class MessagesFragment : Fragment() {
         me = userSessionManager.getLoggedInUser()
     }
 
+    private lateinit var currentConversation: Conversation
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -71,10 +76,10 @@ class MessagesFragment : Fragment() {
             Toast.makeText(activity, getString(R.string.conversation_fail), Toast.LENGTH_SHORT).show()
         } else {
             try {
-                val conversation = gson.fromJson(conversationString, Conversation::class.java)
-                fetchMessagesForConversation(v, conversation)
+                currentConversation = gson.fromJson(conversationString, Conversation::class.java)
+                fetchMessagesForConversation(v, currentConversation)
                 val messageHeader = v.findViewById<TextView>(R.id.messageHeaderText)
-                messageHeader.text = conversation.title
+                messageHeader.text = currentConversation.title
 
             } catch (e: Exception) {
                 Toast.makeText(activity, getString(R.string.conversation_fail), Toast.LENGTH_SHORT).show()
@@ -85,7 +90,7 @@ class MessagesFragment : Fragment() {
 
     fun fetchMessagesForConversation(v: View?, conversation: Conversation) {
         Timber.d("fetchMessagesForConversation: %s", conversation)
-//        datastore.conversationDatabase.child("conversationId").equalTo(conversation.id).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
+//        datastore.conversationDatabase.child("conversationId").equalTo(currentConversation.id).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
 //            override fun onCancelled(p0: DatabaseError) {
 //                Timber.d("onCancelled")
 //                setupMessageList(v!!, ArrayList())
@@ -97,7 +102,7 @@ class MessagesFragment : Fragment() {
 ////                adapter.notifyDataSetChanged()
 //                setupMessageList(v!!, ArrayList())
 //
-//                // TODO: set the conversation message component with the retrieved messages.
+//                // TODO: set the currentConversation message component with the retrieved messages.
 //
 //            }
 //        })
@@ -105,19 +110,6 @@ class MessagesFragment : Fragment() {
     }
 
     fun setupMessageList(v: View, messages: List<Message>) {
-//        recyclerView = v.findViewById<RecyclerView>(R.id.recyler_view).apply {
-//            this.layoutManager = LinearLayoutManager(activity as Context, LinearLayoutManager.VERTICAL, false)
-//        }
-//        adapter = SlimAdapter.create()
-//                .register<CafeMessage>(R.layout.item_message) { data, injector ->
-//                    injector.text(R.id.name, data.message)
-//                            .text(R.id.age, data.timestamp.toString())
-//                            .clicked(R.id.messageLayout) {
-//                                Toast.makeText(activity, "clicked message: ${data.id}", Toast.LENGTH_LONG).show()
-//                            }
-//                }
-//                .attachTo(recyclerView)
-
         mChatView = v.findViewById(R.id.chatMessageView)
 
         //Set UI parameters if you need
@@ -162,11 +154,24 @@ class MessagesFragment : Fragment() {
                         .setText(text)
                         .hideIcon(true)
                         .build()
-                //Set to chat view
-                // TODO: make firebase append call before completing the send operation below.
-                mChatView.send(message)
-                //Reset edit text
-                mChatView.inputText = ""
+                val cafeMessage = CafeMessage(
+                        UUID.randomUUID().toString(),
+                        message,
+                        me.getId(),
+                        currentConversation.id
+                )
+
+
+                datastore.writeMessage(cafeMessage, OnSuccessListener {
+                    Timber.d("Created message: $cafeMessage")
+                    // Send to chat view.
+                    mChatView.send(message)
+                    // Reset edit text.
+                    mChatView.inputText = ""
+                }, OnFailureListener {
+                    Timber.e(it, "Could not create message")
+                    Toast.makeText(activity as Context, "Could not create message: ${it.message}", Toast.LENGTH_SHORT).show()
+                })
             }
         })
 

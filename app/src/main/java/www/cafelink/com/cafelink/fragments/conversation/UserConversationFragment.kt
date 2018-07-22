@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import timber.log.Timber
 import www.cafelink.com.cafelink.CafeApplication
 
 import www.cafelink.com.cafelink.R

@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
+import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -45,7 +46,6 @@ class CafeConversationFragment : AbstractConversationFragment() {
     lateinit var userSessionManager: UserSessionManager
     @Inject
     lateinit var datastore: Datastore
-
 
     lateinit var currentCafe: Data
 
@@ -83,7 +83,7 @@ class CafeConversationFragment : AbstractConversationFragment() {
     private fun startNewConversationDialog(currentCafe: Data) {
         MaterialDialog.Builder(activity as Context)
                 .title("Create New Conversation Thread")
-                .content("Enter the title for a new conversation thread at ${currentCafe.name}")
+                .content("Enter the title for a new conversation at: ${currentCafe.name}")
                 .autoDismiss(false)
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .input(R.string.input_hint, R.string.input_prefill) { dialog, input ->
@@ -102,9 +102,13 @@ class CafeConversationFragment : AbstractConversationFragment() {
                                 System.currentTimeMillis()
                         )
 
+                        Timber.d("Writing new conversation: ${conversation.id}")
                         datastore.writeConversation(conversation, OnSuccessListener {
                             Timber.d("Created conversation: $conversation")
                             dialog.dismiss()
+                        }, OnFailureListener {
+                            Timber.e(it, "Could not create conversation")
+                            Toast.makeText(activity as Context, "Could not create conversation: ${it.message}", Toast.LENGTH_SHORT).show()
                         })
                     }
                 }.show()

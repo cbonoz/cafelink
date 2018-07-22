@@ -119,7 +119,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         mapboxMap.setOnMarkerClickListener { it ->
 //            Toast.makeText(activity, it.title, Toast.LENGTH_LONG).show()
             val wrapInScrollView = true
-            val cafeData = cafeMap.get(it.title)
+            val cafeData = cafeMap[it.title]
             if (cafeData == null) {
                 Toast.makeText(activity as Context, "No Detail Available", Toast.LENGTH_SHORT).show()
             } else {
@@ -262,7 +262,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE) {
 

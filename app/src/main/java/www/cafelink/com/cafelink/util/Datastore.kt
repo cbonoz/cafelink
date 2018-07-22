@@ -1,5 +1,6 @@
 package www.cafelink.com.cafelink.util
 
+import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
@@ -20,16 +21,16 @@ class Datastore(val gson: Gson) {
     // Contains 'User' class objects as json (with userId index).
     val userDatabase = database.collection("users") // users in the app
 
-    fun writeMessage(cafeMessage: CafeMessage, listener: OnSuccessListener<in Void>) {
+    fun writeMessage(cafeMessage: CafeMessage, listener: OnSuccessListener<in Void>, failureListener: OnFailureListener) {
         val cafeString = gson.toJson(cafeMessage)
         val cafeMap: Map<String, Any> = gson.fromJson(cafeString, object : TypeToken<Map<String, Any>>(){}.type)
-        messageDatabase.document(cafeMessage.id).set(cafeMap).addOnSuccessListener(listener)
+        messageDatabase.document(cafeMessage.id).set(cafeMap).addOnSuccessListener(listener).addOnFailureListener(failureListener)
     }
 
-    fun writeConversation(conversation: Conversation, listener: OnSuccessListener<in Void>) {
+    fun writeConversation(conversation: Conversation, listener: OnSuccessListener<in Void>, failureListener: OnFailureListener) {
         val conversationString = gson.toJson(conversation)
         val conversationMap: Map<String, Any> = gson.fromJson(conversationString, object : TypeToken<Map<String, Any>>(){}.type)
-        conversationDatabase.document(conversation.id).set(conversationMap).addOnSuccessListener(listener)
+        conversationDatabase.document(conversation.id).set(conversationMap).addOnSuccessListener(listener).addOnFailureListener(failureListener)
     }
 
 }
