@@ -24,7 +24,6 @@
         android:textSize="@dimen/large_text"
         android:textStyle="bold" />
 
-
     <TextView
         android:id="@+id/cafeDetailText"
         android:layout_width="match_parent"
