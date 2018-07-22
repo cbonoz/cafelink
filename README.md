@@ -16,6 +16,15 @@ Initially built for the <a href="https://devcommunitychallenge.devpost.com">Face
 
 <p>Cafelink is a novel app for connecting people locally around projects by meeting and discussing at local cafe locations - powered by facebook search.</p>
 
+
+### Dev Setup
+
+Add a the following variable (using your mapbox api key) to your `gradle.properties` file:
+
+<pre>
+    Cafelink_MapboxKey="XXXXXXXX"
+</pre>
+
 ### App User Flow
 
 <img src="screenshots/cafelink_flowchart.png" width="600"/>
