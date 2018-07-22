@@ -43,8 +43,8 @@ class CafeModule(private val mApplication: CafeApplication) {
 
     @Provides
     @Singleton
-    internal fun providesDatastore(): Datastore {
-        return Datastore()
+    internal fun providesDatastore(gson: Gson): Datastore {
+        return Datastore(gson)
     }
 
     @Provides

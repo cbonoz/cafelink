@@ -1,11 +1,12 @@
 package www.cafelink.com.cafelink.util
 
 import com.google.firebase.database.FirebaseDatabase
+import com.google.gson.Gson
 import www.cafelink.com.cafelink.models.CafeMessage
 import www.cafelink.com.cafelink.models.Conversation
 
 
-class Datastore() {
+class Datastore(val gson: Gson) {
 
     val database = FirebaseDatabase.getInstance()
     // Contains 'Conversation' class objects as json (with id index).
@@ -17,11 +18,11 @@ class Datastore() {
 
 
     fun writeMessage(cafeMessage: CafeMessage) {
-        messageDatabase.child(cafeMessage.id).setValue(cafeMessage)
+        messageDatabase.child(cafeMessage.id).setValue(gson.toJson(cafeMessage))
     }
 
     fun writeConversation(conversation: Conversation) {
-        conversationDatabase.child(conversation.id).setValue(conversation)
+        conversationDatabase.child(conversation.id).setValue(gson.toJson(conversation))
     }
 
 }
