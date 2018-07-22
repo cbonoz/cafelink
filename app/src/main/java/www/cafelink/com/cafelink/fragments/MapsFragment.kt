@@ -245,6 +245,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
+                ActivityCompat.requestPermissions(context,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        MY_PERMISSIONS_ACCESS_FINE_LOCATION)
             } else {
                 // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(context,

@@ -2,8 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragments.NotificationFragment">
+    android:layout_height="match_parent">
 
     <TextView
         android:text="Messages"
@@ -28,11 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             app:SpinKit_Color="@color/md_brown_400" />
-
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/recyler_view"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
 
         <com.github.bassaer.chatmessageview.view.MessageView
             android:id="@+id/chatMessageView"

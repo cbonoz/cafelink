@@ -31,6 +31,7 @@ import www.cafelink.com.cafelink.models.MyIChatUser
 import www.cafelink.com.cafelink.models.User
 import java.util.*
 import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.Query
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -101,10 +102,10 @@ class MessagesFragment : Fragment() {
         return v
     }
 
-    fun fetchMessagesForConversation(v: View?, conversation: Conversation) {
+    fun fetchMessagesForConversation(v: View, conversation: Conversation) {
         Timber.d("fetchMessagesForConversation: %s", conversation)
         data.clear()
-        datastore.messageDatabase.whereEqualTo("conversationId", conversation.id).orderBy("lastUpdated")
+        datastore.messageDatabase.whereEqualTo("conversationId", conversation.id).orderBy("lastUpdated", Query.Direction.DESCENDING)
                 .addSnapshotListener { snapshots, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
                         Timber.e(firebaseFirestoreException, "error getting messages for conversationId: %s", conversation.id)
@@ -123,6 +124,8 @@ class MessagesFragment : Fragment() {
                                 DocumentChange.Type.REMOVED -> Timber.d("Removed message: %s", docData)
                             }
                         }
+
+                        setupMessageList(v, data)
                     }
                 }
     }

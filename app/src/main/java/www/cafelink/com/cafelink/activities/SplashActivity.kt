@@ -80,13 +80,13 @@ class SplashActivity : AwesomeSplash() {
                 .content("Enter your user name for the CafeLink app - note you can only set this once for the device")
                 .autoDismiss(false)
                 .inputType(InputType.TYPE_CLASS_TEXT)
-                .input(R.string.input_hint, R.string.input_prefill, MaterialDialog.InputCallback { dialog, input ->
+                .input(R.string.username, R.string.input_prefill, MaterialDialog.InputCallback { dialog, input ->
                     val userName = input.toString()
 
                     if (userName.isBlank()) {
                         Toast.makeText(this, "Username must not be empty", Toast.LENGTH_SHORT).show()
                     } else {
-                        userSessionManager.setLoggedInUser(this, User(userName))
+                        userSessionManager.setLoggedInUser(User(userName))
                         dialog.dismiss()
                         proceed()
                     }

@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/conversationHeaderText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:fontFamily="cursive"
+        android:text="@string/your_conversations"
+        android:textAlignment="center"
+        android:textSize="@dimen/med_text" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -18,8 +28,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:text="No Conversations, contribute to one by searching for a cafe."
                 android:layout_margin="10dp"
-                android:text="No Conversations, why not start one?"
                 android:textAlignment="center"
                 android:textSize="@dimen/med_text"
                 android:visibility="gone" />
@@ -29,18 +39,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_new_conversation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="16dp"
-                android:tint="@android:color/white"
-                app:backgroundTint="@color/primary"
-                app:srcCompat="@drawable/zzz_pencil" />
-
         </FrameLayout>
 
     </ScrollView>
 
-</FrameLayout>
+
+</LinearLayout>

@@ -51,7 +51,7 @@ abstract class AbstractConversationFragment : Fragment() {
                     val lastUpdatedDate = sdf.format(Date(data.lastUpdated))
                     injector.text(R.id.title, data.title)
                             .text(R.id.lastUpdated, "Last Updated: $lastUpdatedDate")
-                            .text(R.id.messageCountText, data.messageCount)
+                            .text(R.id.messageCountText, "${data.messageCount}")
                             .clicked(R.id.messageLayout) {
                                 Toast.makeText(activity, "clicked message: ${data.id}", Toast.LENGTH_LONG).show()
                                 Timber.d("Clicked conversation: $data")

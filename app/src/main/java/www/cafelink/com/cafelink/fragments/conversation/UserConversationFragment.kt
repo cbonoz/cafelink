@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.Query
 import timber.log.Timber
 import www.cafelink.com.cafelink.CafeApplication
 
@@ -39,7 +40,7 @@ class UserConversationFragment : AbstractConversationFragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         super.onCreateView(inflater, container, savedInstanceState)
-        val v = inflater.inflate(R.layout.fragment_conversation, container, false)
+        val v = inflater.inflate(R.layout.fragment_user_conversation, container, false)
         recyclerView = v.findViewById<RecyclerView>(R.id.recyler_view).apply {
             this.layoutManager = LinearLayoutManager(activity as Context, LinearLayoutManager.VERTICAL, false)
         }
@@ -52,7 +53,7 @@ class UserConversationFragment : AbstractConversationFragment() {
     }
 
     private fun fetchConversationsForUser(userId: String) {
-        datastore.conversationDatabase.whereEqualTo("participants.${userId}", true).orderBy("lastUpdated")
+        datastore.conversationDatabase.whereEqualTo("participants.${userId}", true).orderBy("lastUpdated", Query.Direction.DESCENDING)
                 .addSnapshotListener { snapshots, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
                         Timber.e(firebaseFirestoreException, "error getting conversations for userId: %s", userId)

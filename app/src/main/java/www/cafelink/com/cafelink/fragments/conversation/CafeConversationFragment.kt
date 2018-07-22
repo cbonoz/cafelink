@@ -10,9 +10,11 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.Query
 import timber.log.Timber
 import www.cafelink.com.cafelink.CafeApplication
 import www.cafelink.com.cafelink.CafeApplication.Companion.CAFE_DATA
@@ -48,6 +50,8 @@ class CafeConversationFragment : AbstractConversationFragment() {
 
     private var writing: Boolean = false
 
+    private lateinit var noConversationsText: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         CafeApplication.injectionComponent.inject(this)
@@ -65,6 +69,7 @@ class CafeConversationFragment : AbstractConversationFragment() {
         recyclerView = v.findViewById<RecyclerView>(R.id.recyler_view).apply {
             layoutManager = LinearLayoutManager(activity as Context, LinearLayoutManager.VERTICAL, false)
         }
+        noConversationsText = v.findViewById(R.id.noConversationsText)
         setupConversationList(v)
         setupConversationFab(v, currentCafe)
         fetchConversationsForCafe(currentCafe.id)
@@ -128,17 +133,19 @@ class CafeConversationFragment : AbstractConversationFragment() {
 
     private fun fetchConversationsForCafe(cafeId: String) {
         data.clear()
-        datastore.conversationDatabase.whereEqualTo("cafeId", cafeId).orderBy("lastUpdated")
+        datastore.conversationDatabase.whereEqualTo("cafeId", cafeId).orderBy("lastUpdated", Query.Direction.DESCENDING)
                 .addSnapshotListener { snapshots, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
                         Timber.e(firebaseFirestoreException, "error getting conversations for cafeId: %s", cafeId)
                     } else {
-                        for (dc in snapshots!!.getDocumentChanges()) {
+                        var noConversations = true
+                        for (dc in snapshots!!.documentChanges) {
                             val docData = dc.document.data
                             when (dc.getType()) {
                                 DocumentChange.Type.ADDED -> {
                                     // Append the entry to the conversation list view.
                                     val conversation = gson.fromJson(gson.toJson(docData), Conversation::class.java)
+                                    noConversations = false
                                     data.add(conversation)
                                     adapter.updateData(data)
                                     adapter.notifyItemChanged(data.size - 1)
@@ -146,6 +153,12 @@ class CafeConversationFragment : AbstractConversationFragment() {
                                 DocumentChange.Type.MODIFIED -> Timber.d("Modified conversation: %s", docData)
                                 DocumentChange.Type.REMOVED -> Timber.d("Removed conversation: %s", docData)
                             }
+                        }
+
+                        if (noConversations) {
+                            noConversationsText.visibility = View.VISIBLE
+                        } else {
+                            noConversationsText.visibility = View.GONE
                         }
                     }
                 }

@@ -6,41 +6,40 @@
     android:orientation="horizontal">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_weight=".7"
-        android:padding="10dp"
         android:layout_width="0dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight=".7"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-    <TextView
-        android:id="@+id/title"
-        style="@style/Base.TextAppearance.AppCompat.Title"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp" />
+        <TextView
+            android:id="@+id/title"
+            style="@style/Base.TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp" />
 
-    <TextView
-        android:id="@+id/lastUpdated"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp" />
+        <TextView
+            android:id="@+id/lastUpdated"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_weight=".3"
         android:layout_width="0dp"
-        android:layout_height="match_parent">
-
-
-    <TextView
-        android:id="@+id/messageCountText"
-        android:text="#"
-        android:textSize="@dimen/large_text"
-        android:layout_width="match_parent"
-        android:textStyle="bold"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:height="80dp"/>
+        android:layout_weight=".3"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/messageCountText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:height="80dp"
+            android:gravity="center"
+            android:text="#"
+            android:textSize="@dimen/large_text"
+            android:textStyle="bold" />
 
     </LinearLayout>
 </LinearLayout>
