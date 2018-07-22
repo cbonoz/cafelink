@@ -22,9 +22,6 @@ import www.cafelink.com.cafelink.util.Datastore
 import www.cafelink.com.cafelink.util.UserSessionManager
 import javax.inject.Inject
 import com.github.bassaer.chatmessageview.view.ChatView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import timber.log.Timber
 import www.cafelink.com.cafelink.models.Conversation
@@ -88,23 +85,22 @@ class MessagesFragment : Fragment() {
 
     fun fetchMessagesForConversation(v: View?, conversation: Conversation) {
         Timber.d("fetchMessagesForConversation: %s", conversation)
-        datastore.conversationDatabase.child("conversationId").equalTo(conversation.id).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                Timber.d("onCancelled")
-                setupMessageList(v!!, ArrayList())
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                Timber.d("onData: ${p0}")
-//                adapter.updateData(data)
-//                adapter.notifyDataSetChanged()
-                setupMessageList(v!!, ArrayList())
-
-                // TODO: set the conversation message component with the retrieved messages.
-
-            }
-
-        })
+//        datastore.conversationDatabase.child("conversationId").equalTo(conversation.id).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
+//            override fun onCancelled(p0: DatabaseError) {
+//                Timber.d("onCancelled")
+//                setupMessageList(v!!, ArrayList())
+//            }
+//
+//            override fun onDataChange(p0: DataSnapshot) {
+//                Timber.d("onData: ${p0}")
+////                adapter.updateData(data)
+////                adapter.notifyDataSetChanged()
+//                setupMessageList(v!!, ArrayList())
+//
+//                // TODO: set the conversation message component with the retrieved messages.
+//
+//            }
+//        })
 
     }
 

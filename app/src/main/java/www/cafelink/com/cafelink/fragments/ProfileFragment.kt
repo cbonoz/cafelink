@@ -6,10 +6,6 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import timber.log.Timber
 import www.cafelink.com.cafelink.CafeApplication
 
 import www.cafelink.com.cafelink.R
@@ -44,15 +40,15 @@ class ProfileFragment : Fragment() {
     }
 
     private fun fetchUserInfo(userId: String) {
-        datastore.userDatabase.child("userId").equalTo(userId).addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                Timber.d("onCancelled")
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                Timber.d("onData: ${p0}")
-            }
-
-        })
+//        datastore.userDatabase.child("userId").equalTo(userId).addValueEventListener(object : ValueEventListener {
+//            override fun onCancelled(p0: DatabaseError) {
+//                Timber.d("onCancelled")
+//            }
+//
+//            override fun onDataChange(p0: DataSnapshot) {
+//                Timber.d("onData: ${p0}")
+//            }
+//
+//        })
     }
 }

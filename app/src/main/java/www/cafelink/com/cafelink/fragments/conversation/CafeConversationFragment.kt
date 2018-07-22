@@ -13,9 +13,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.QuerySnapshot
 import timber.log.Timber
 import www.cafelink.com.cafelink.CafeApplication
 import www.cafelink.com.cafelink.CafeApplication.Companion.CAFE_DATA
@@ -100,22 +101,21 @@ class CafeConversationFragment : AbstractConversationFragment() {
                                 currentCafe.id,
                                 System.currentTimeMillis()
                         )
-                        datastore.writeConversation(conversation)
-                        dialog.dismiss()
+
+                        datastore.writeConversation(conversation, OnSuccessListener {
+                            Timber.d("Created conversation: $conversation")
+                            dialog.dismiss()
+                        })
                     }
                 }.show()
     }
 
     private fun fetchConversationsForCafe(cafeId: String) {
-        datastore.conversationDatabase.child("cafeId").equalTo(cafeId).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                Timber.d("onCancelled")
-            }
+        datastore.conversationDatabase.whereEqualTo("cafeId" ,cafeId).orderBy("lastUpdated")
+                .addSnapshotListener(object : EventListener<QuerySnapshot> {
+                    override fun onEvent(p0: QuerySnapshot?, p1: FirebaseFirestoreException?) {
 
-            override fun onDataChange(p0: DataSnapshot) {
-                adapter.updateData(data)
-                adapter.notifyDataSetChanged()
-            }
+                    }
 
         })
     }

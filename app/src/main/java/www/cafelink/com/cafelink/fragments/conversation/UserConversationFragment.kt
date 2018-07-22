@@ -9,9 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import timber.log.Timber
 import www.cafelink.com.cafelink.CafeApplication
 
@@ -54,18 +51,18 @@ class UserConversationFragment : AbstractConversationFragment() {
 
     private fun fetchConversationsForUser(userId: String) {
         // TODO: use participants
-        datastore.conversationDatabase.child("userId").equalTo(userId).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                Timber.d("onCancelled")
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                Timber.d("onData: ${p0}")
-                adapter.updateData(data)
-                adapter.notifyDataSetChanged()
-            }
-
-        })
+//        datastore.conversationDatabase.child("userId").equalTo(userId).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
+//            override fun onCancelled(p0: DatabaseError) {
+//                Timber.d("onCancelled")
+//            }
+//
+//            override fun onDataChange(p0: DataSnapshot) {
+//                Timber.d("onData: ${p0}")
+//                adapter.updateData(data)
+//                adapter.notifyDataSetChanged()
+//            }
+//
+//        })
     }
 
 }
