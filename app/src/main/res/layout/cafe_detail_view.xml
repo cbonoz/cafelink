@@ -1,41 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:padding="5dp"
-    android:layout_height="match_parent">
-
+    android:padding="5dp">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        android:layout_height="200dp"
+        android:orientation="horizontal">
 
         <ImageView
-            android:layout_marginTop="5dp"
-            android:contentDescription="Picture of Cafe"
             android:id="@+id/cafeImageView"
-            android:layout_weight=".4"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_weight=".4"
+            android:contentDescription="Picture of Cafe" />
 
         <TextView
-            android:text="Cafe"
-            android:layout_gravity="center"
-            android:textStyle="bold"
             android:id="@+id/cafeNameText"
-            android:paddingTop="5dp"
-            android:layout_weight=".6"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight=".6"
+            android:paddingTop="5dp"
+            android:text="Cafe"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
     <TextView
         android:id="@+id/cafeDetailText"
-        android:textSize="@dimen/med_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/med_text" />
 
 </LinearLayout>

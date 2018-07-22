@@ -117,7 +117,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
         setupLocationUpdates()
         mapboxMap.setOnMarkerClickListener { it ->
-            Toast.makeText(activity, it.title, Toast.LENGTH_LONG).show()
+//            Toast.makeText(activity, it.title, Toast.LENGTH_LONG).show()
             val wrapInScrollView = true
             val cafeData = cafeMap.get(it.title)
             if (cafeData == null) {
@@ -138,16 +138,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                         }
                         .show()
 
-                val view = dialog.getCustomView()
-                val imageView = view!!.findViewById<ImageView>(R.id.cafeImageView)
+                val view = dialog.customView!!
                 val cafeNameText = view.findViewById<TextView>(R.id.cafeNameText)
                 cafeNameText.text = cafeData.name
                 val cafeDetailText = view.findViewById<TextView>(R.id.cafeDetailText)
                 val pictureData = cafeData.picture.data
 
-                imageView.layoutParams.width = pictureData.width * 3
-                imageView.layoutParams.height = pictureData.height * 3
+//                imageView.layoutParams.width = pictureData.width * 3
+//                imageView.layoutParams.height = pictureData.height * 3
 
+                val imageView = view.findViewById<ImageView>(R.id.cafeImageView)
                 Glide.with(this)
                         .load(pictureData.url)
                         .into(imageView);
