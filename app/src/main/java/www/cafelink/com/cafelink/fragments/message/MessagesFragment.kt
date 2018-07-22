@@ -24,6 +24,7 @@ import javax.inject.Inject
 import com.github.bassaer.chatmessageview.view.ChatView
 import com.google.gson.Gson
 import timber.log.Timber
+import www.cafelink.com.cafelink.models.ChatUser
 import www.cafelink.com.cafelink.models.Conversation
 import www.cafelink.com.cafelink.models.User
 import www.cafelink.com.cafelink.util.PrefManager
@@ -133,7 +134,7 @@ class MessagesFragment : Fragment() {
 
         // Populate the existing messages list.
         messages.map {
-            if (it.user.getId() == currentUser.getId()) {
+            if (it.user.getId() == currentUser.userId) {
                 mChatView.send(it)
             } else {
                 mChatView.receive(it)
@@ -151,8 +152,9 @@ class MessagesFragment : Fragment() {
             } else if (!writing) {
                 writing = true
 
+                val chatUser = ChatUser(me.userName, me.userId)
                 val message = Message.Builder()
-                        .setUser(me)
+                        .setUser(chatUser)
                         .setRight(true)
                         .setText(text)
                         .hideIcon(true)
@@ -160,7 +162,7 @@ class MessagesFragment : Fragment() {
                 val cafeMessage = CafeMessage(
                         UUID.randomUUID().toString(),
                         message,
-                        me.getId(),
+                        me.userId,
                         currentConversation.id
                 )
 

@@ -41,7 +41,7 @@ class UserConversationFragment : AbstractConversationFragment() {
             this.layoutManager = LinearLayoutManager(activity as Context, LinearLayoutManager.VERTICAL, false)
         }
         setupConversationList(v, recyclerView)
-        val userId = userSessionManager.getLoggedInUser().getId()
+        val userId = userSessionManager.getLoggedInUser().userId
         fetchConversationsForUser(userId)
         val conversationHeader = v.findViewById<TextView>(R.id.conversationHeaderText)
         conversationHeader.text = getString(R.string.your_conversations)

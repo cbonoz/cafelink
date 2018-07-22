@@ -10,16 +10,12 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
-import com.google.firebase.firestore.EventListener
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.android.gms.tasks.OnCompleteListener
 import timber.log.Timber
 import www.cafelink.com.cafelink.CafeApplication
 import www.cafelink.com.cafelink.CafeApplication.Companion.CAFE_DATA
-
 import www.cafelink.com.cafelink.R
 import www.cafelink.com.cafelink.models.Conversation
 import www.cafelink.com.cafelink.models.cafe.Data
@@ -68,9 +64,19 @@ class CafeConversationFragment : AbstractConversationFragment() {
         }
         setupConversationList(v, recyclerView)
         setupConversationFab(v, currentCafe)
-        fetchConversationsForCafe(currentCafe.id)
-//        val conversationHeader = v.findViewById<TextView>(R.id.conversationHeaderText)
-//        conversationHeader.text = currentCafe.name
+
+        datastore.fetchCafeConversations(currentCafe.id, OnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val result = task.result
+                if (!result.isEmpty) {
+                    val conversations = result.toObjects(Conversation::class.java)
+                    adapter.updateData(conversations)
+                }
+            } else {
+                Timber.e("Error fetching conversations for cafe ${currentCafe.id}", task.exception)
+            }
+        })
+
         return v
     }
 
@@ -99,7 +105,7 @@ class CafeConversationFragment : AbstractConversationFragment() {
                                 UUID.randomUUID().toString(),
                                 conversationTitle,
                                 user,
-                                mapOf(Pair(user.getId(), true)),
+                                mapOf(Pair(user.userId, true)),
                                 currentCafe.id,
                                 System.currentTimeMillis()
                         )
@@ -121,16 +127,6 @@ class CafeConversationFragment : AbstractConversationFragment() {
                         Toast.makeText(activity, getString(R.string.saving), Toast.LENGTH_SHORT).show()
                     }
                 }.show()
-    }
-
-    private fun fetchConversationsForCafe(cafeId: String) {
-        datastore.conversationDatabase.whereEqualTo("cafeId" ,cafeId).orderBy("lastUpdated")
-                .addSnapshotListener(object : EventListener<QuerySnapshot> {
-                    override fun onEvent(p0: QuerySnapshot?, p1: FirebaseFirestoreException?) {
-
-                    }
-
-        })
     }
 
 }
