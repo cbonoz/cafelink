@@ -115,12 +115,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
                 val dialog = MaterialDialog.Builder(activity as Context)
                         .title(it.title)
-                        .customView(R.layout.cafe_detail_view, wrapInScrollView)
+                        .customView(R.layout.cafe_detail_dialog, wrapInScrollView)
                         .negativeText(R.string.back)
                         .onNegative { dialog, which ->
                             dialog.dismiss()
                         }
-                        .positiveText(R.string.see_activity)
+                        .positiveText(R.string.view_conversations)
                         .onPositive { dialog, which ->
                             dialog.dismiss()
                             goToCafeMessageFragment(cafeData)
@@ -133,10 +133,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 val cafeDetailText = view.findViewById<TextView>(R.id.cafeDetailText)
                 val pictureData = cafeData.picture.data
 
-//                imageView.layoutParams.width = pictureData.width * 3
-//                imageView.layoutParams.height = pictureData.height * 3
-
                 val imageView = view.findViewById<ImageView>(R.id.cafeImageView)
+                imageView.layoutParams.width = pictureData.width * 5
+                imageView.layoutParams.height = pictureData.height * 5
+
                 Glide.with(this)
                         .load(pictureData.url)
                         .into(imageView);
@@ -226,7 +226,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             val graphRequest = PlaceManager.newPlaceSearchRequestForLocation(searchRequest, location)
             graphRequest.callback = PlaceSearchRequestCallback(gson)
             graphRequest.executeAsync()
-            prefManager.saveJson(LAST_LOCATION_LOC, location)
         } else {
             Timber.d("search without location")
             PlaceManager.newPlaceSearchRequest(searchRequest, PlaceSearchRequestCallback(gson))
@@ -299,6 +298,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
         mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(newCameraPosition), CAMERA_ANIMATION_MS)
 
+        prefManager.saveJson(LAST_LOCATION_LOC, newPosition)
         val newLocation = Location("")
         newLocation.latitude = newPosition.latitude
         newLocation.longitude = newPosition.longitude

@@ -16,6 +16,7 @@
         android:name=".CafeApplication"
         android:allowBackup="true"
         android:label="@string/cafelink"
+        tools:replace="android:label"
         android:icon="@drawable/cafe_link_trans_170"
         android:roundIcon="@drawable/cafe_link_trans_170"
         android:supportsRtl="true"

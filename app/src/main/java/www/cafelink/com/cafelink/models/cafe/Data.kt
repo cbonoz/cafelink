@@ -12,11 +12,10 @@ data class Data(
 
     fun getInfo(): String {
         val cafeString = StringBuilder()
-
 //        cafeString.append("Name: \n").append(name.capitalize())
 
         if (hours != null && hours.isNotEmpty()) {
-            cafeString.append("\n\nHours:\n")
+            cafeString.append("Hours:\n")
             hours.map {
                 val dayTokens = it.key.split("_")
                 val dayString = when (dayTokens.size) {
@@ -29,13 +28,14 @@ data class Data(
                 }
                 cafeString.append("\n * $dayString: ${it.value}")
             }
+            cafeString.append("\n")
         }
 
         if (!phone.isNullOrBlank()) {
-            cafeString.append("\n\nPhone:").append("\n${phone}")
+            cafeString.append("\nPhone:").append("\n${phone}\n")
         }
 
-        cafeString.append("\n\nLocation:\n${location}")
+        cafeString.append("\nLocation:\n${location}")
         return cafeString.toString()
     }
 

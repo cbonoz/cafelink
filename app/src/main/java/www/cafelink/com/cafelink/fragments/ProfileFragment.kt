@@ -22,8 +22,6 @@ import javax.inject.Inject
 class ProfileFragment : Fragment() {
 
     @Inject
-    lateinit var cafeService: CafeService
-    @Inject
     lateinit var datastore: Datastore
     @Inject
     lateinit var userSessionManager: UserSessionManager

@@ -15,7 +15,7 @@
     <string name="location_required">Location Permission is required</string>
     <string name="title_messages">Messages</string>
     <string name="back">Back</string>
-    <string name="see_activity">See Activity</string>
+    <string name="view_conversations">View Conversations</string>
     <string name="input_prefill">Enter Name..</string>
     <string name="your_conversations">Your Conversations</string>
     <string name="conversation_fail">Could not find data for conversation</string>
