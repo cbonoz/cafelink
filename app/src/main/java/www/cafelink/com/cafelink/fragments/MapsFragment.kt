@@ -140,15 +140,21 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
                 val view = dialog.getCustomView()
                 val imageView = view!!.findViewById<ImageView>(R.id.cafeImageView)
+                val cafeNameText = view.findViewById<TextView>(R.id.cafeNameText)
+                cafeNameText.text = cafeData.name
                 val cafeDetailText = view.findViewById<TextView>(R.id.cafeDetailText)
+                val pictureData = cafeData.picture.data
+
+                imageView.layoutParams.width = pictureData.width * 3
+                imageView.layoutParams.height = pictureData.height * 3
 
                 Glide.with(this)
-                        .load(cafeData.picture.data.url)
+                        .load(pictureData.url)
                         .into(imageView);
 
-                val detailString = "Information\n$cafeData"
+//                val detailString = "Information\n$cafeData"
 
-                cafeDetailText.text = detailString
+                cafeDetailText.text = cafeData.getInfo()
             }
             true
 
@@ -408,6 +414,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         override fun onCompleted(response: GraphResponse?) {
             Timber.d("onCompleted graphSearch: $response")
             val cafeResponse = gson.fromJson(response!!.rawResponse, CafeResponse::class.java)
+            if (cafeResponse == null) {
+                Timber.e("cafeResponse is null")
+                return
+            }
             Timber.d("cafeResponse: $cafeResponse")
 
             val iconFactory = IconFactory.getInstance(app!!);

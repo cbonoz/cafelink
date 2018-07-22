@@ -86,28 +86,12 @@ class MessagesFragment : Fragment() {
         return v
     }
 
-
-    private fun fetchMessages(cafeId: String) {
-//        cafeService.getCafeMessagesUrl(cafeId = "").httpGet()
-        datastore.messageDatabase.child("conversationId").equalTo(cafeId).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                adapter.updateData(data)
-                adapter.notifyDataSetChanged()
-            }
-
-        })
-    }
-
-
     fun fetchMessagesForConversation(v: View?, conversation: Conversation) {
         Timber.d("fetchMessagesForConversation: %s", conversation)
         datastore.conversationDatabase.child("conversationId").equalTo(conversation.id).orderByChild("lastUpdated").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 Timber.d("onCancelled")
+                setupMessageList(v!!, ArrayList())
             }
 
             override fun onDataChange(p0: DataSnapshot) {

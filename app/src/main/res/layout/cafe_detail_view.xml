@@ -2,18 +2,38 @@
 <LinearLayout
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:padding="5dp"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_margin="20dp"
-        android:contentDescription="Picture of Cafe"
-        android:id="@+id/cafeImageView"
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:layout_marginTop="5dp"
+            android:contentDescription="Picture of Cafe"
+            android:id="@+id/cafeImageView"
+            android:layout_weight=".4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Cafe"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:id="@+id/cafeNameText"
+            android:paddingTop="5dp"
+            android:layout_weight=".6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/cafeDetailText"
-        android:padding="20dp"
         android:textSize="@dimen/med_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
