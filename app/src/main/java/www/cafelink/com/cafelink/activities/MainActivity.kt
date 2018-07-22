@@ -12,7 +12,7 @@ import www.cafelink.com.cafelink.fragments.conversation.UserConversationFragment
 
 class MainActivity : AppCompatActivity() {
 
-    private var lastFragmentSelected: String = ""
+    private var lastFragmentSelected = ""
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {

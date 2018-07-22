@@ -24,6 +24,9 @@ class CafeApplication : Application() {
     companion object {
 
         val CAFE_SEARCH_STRING = "cafe"
+
+        val LAST_LOCATION_LOC = "last_location"
+
         val CAFE_DATA = "cafe_data"
         val CONVERSATION_DATA = "conv_data"
 
