@@ -31,8 +31,8 @@ class CafeModule(private val mApplication: CafeApplication) {
 
     @Provides
     @Singleton
-    internal fun providesUserSessionManager(prefManager: PrefManager): UserSessionManager {
-        return UserSessionManager(prefManager)
+    internal fun providesUserSessionManager(prefManager: PrefManager, gson: Gson): UserSessionManager {
+        return UserSessionManager(prefManager, gson)
     }
 
     @Provides

@@ -13,24 +13,4 @@ class CafeService(private val prefManager: PrefManager) {
         return random.nextInt(to - from) + from
     }
 
-    fun postMessageUrl(): String {
-        return "${SERVER_URL}/api/message"
-    }
-
-    fun getCafeConversationsUrl(cafeId: String): String {
-        return "${SERVER_URL}/api/conversations/cafe/${cafeId}"
-    }
-
-    fun getUserConversationsUrl(userId: String): String {
-        return "${SERVER_URL}/api/conversations/user/${userId}"
-    }
-
-    fun getUserInfoUrl(userId: String): String {
-        return "${SERVER_URL}/api/info/user/${userId}"
-    }
-
-    companion object {
-        val SERVER_URL = ""
-    }
-
 }

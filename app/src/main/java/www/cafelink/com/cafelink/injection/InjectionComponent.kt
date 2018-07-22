@@ -6,7 +6,10 @@ import dagger.Component
 import www.cafelink.com.cafelink.activities.MainActivity
 import www.cafelink.com.cafelink.activities.SplashActivity
 import www.cafelink.com.cafelink.fragments.*
-import www.cafelink.com.cafelink.injection.CafeModule
+import www.cafelink.com.cafelink.fragments.conversation.AbstractConversationFragment
+import www.cafelink.com.cafelink.fragments.conversation.CafeConversationFragment
+import www.cafelink.com.cafelink.fragments.conversation.UserConversationFragment
+import www.cafelink.com.cafelink.fragments.message.MessagesFragment
 
 @Singleton
 @Component(modules = arrayOf(CafeModule::class))
@@ -16,12 +19,13 @@ interface InjectionComponent {
 //    fun inject(activity: LoginActivity)
     fun inject(activity: MainActivity)
     fun inject(activity: SplashActivity)
-    fun inject(cafeMessageFragment: CafeMessageFragment)
-    fun inject(messageFragment: MessageFragment)
     fun inject(profileFragment: ProfileFragment)
 
     fun inject(cafeConversationFragment: CafeConversationFragment)
-    fun inject(conversationFragment: ConversationFragment)
+    fun inject(userConversationFragment: UserConversationFragment)
+    fun inject(messagesFragment: MessagesFragment)
+    fun inject(abstractConversationFragment: AbstractConversationFragment)
+    fun inject(mapsFragment: MapsFragment)
 
     // Fragments
 //    fun inject(favoritesFragment: FavoritesFragment)

@@ -1,5 +1,6 @@
 package www.cafelink.com.cafelink.activities
 
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 
@@ -7,13 +8,19 @@ import com.daimajia.androidanimations.library.Techniques
 import com.viksaa.sssplash.lib.activity.AwesomeSplash
 import com.viksaa.sssplash.lib.cnst.Flags
 import com.viksaa.sssplash.lib.model.ConfigSplash
+import timber.log.Timber
 import www.cafelink.com.cafelink.BuildConfig
 import www.cafelink.com.cafelink.CafeApplication
 import www.cafelink.com.cafelink.R
-import www.cafelink.com.cafelink.util.PrefManager
 import www.cafelink.com.cafelink.util.UserSessionManager
 
 import javax.inject.Inject
+import com.afollestad.materialdialogs.MaterialDialog
+import android.text.InputType
+import android.widget.Toast
+import www.cafelink.com.cafelink.models.User
+import java.util.*
+
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -37,7 +44,7 @@ class SplashActivity : AwesomeSplash() {
             // Production duration for into splash screen animations.
             duration = 1000
         }
-        Log.d(TAG, "Splash duration: " + duration)
+        Timber.d("Splash duration: %s", duration)
 
         //Customize Circular Reveal
         configSplash.backgroundColor = R.color.md_brown_100
@@ -59,30 +66,39 @@ class SplashActivity : AwesomeSplash() {
         configSplash.animTitleDuration = duration
         configSplash.animTitleTechnique = Techniques.FadeInDown
         // configSplash.setTitleFont("fonts/myfont.ttf"); //provide string to your font located in assets/fonts/
-
     }
 
     override fun animationsFinished() {
         // Transit to another activity here or perform other actions.
+        if (userSessionManager.hasLoggedInUser()) {
+            proceed()
+            return
+        }
 
-        // TODO: replace with check of logged in user and redirect to login - for now using deviceId.
-//        val token = prefManager.getString("token", null)
-//        val intent: Intent
-//        if (token != null) {
-//            intent = Intent(this, MainActivity::class.java)
-//        } else {
-//            intent = Intent(this, LoginActivity::class.java)
-//        }
-        userSessionManager.setLoggedInUserId(this)
+        MaterialDialog.Builder(this)
+                .title("Enter Username")
+                .content("Enter your user name for the CafeLink app - note you can only set this once for the device")
+                .autoDismiss(false)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .input(R.string.input_hint, R.string.input_prefill, MaterialDialog.InputCallback { dialog, input ->
+                    val userName = input.toString()
 
+                    if (userName.isBlank()) {
+                        Toast.makeText(this, "Username must not be empty", Toast.LENGTH_SHORT).show()
+                    } else {
+                        userSessionManager.setLoggedInUser(this, User(UUID.randomUUID().toString(), userName, ""))
+                        dialog.dismiss()
+                        proceed()
+                    }
+                    // Do something
+                }).show()
+    }
+
+    private fun proceed() {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()
-    }
-
-    companion object {
-        private val TAG = "SplashActivity"
     }
 
 }

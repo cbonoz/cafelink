@@ -3,6 +3,7 @@ package www.cafelink.com.cafelink
 import android.app.Application
 
 import com.facebook.FacebookSdk
+import timber.log.Timber
 import www.cafelink.com.cafelink.injection.CafeModule
 import www.cafelink.com.cafelink.injection.DaggerInjectionComponent
 import www.cafelink.com.cafelink.injection.InjectionComponent
@@ -16,15 +17,18 @@ class CafeApplication : Application() {
         mInjectionComponent = DaggerInjectionComponent.builder()
                 .cafeModule(CafeModule(this))
                 .build()
-
+        Timber.plant(Timber.DebugTree());
         app = this
     }
 
     companion object {
 
         val CAFE_SEARCH_STRING = "cafe"
+        val CAFE_DATA = "cafe_data"
+        val CONVERSATION_DATA = "conv_data"
+
         val MY_PERMISSIONS_ACCESS_FINE_LOCATION = 100
-        private var app: CafeApplication? = null
+        var app: CafeApplication? = null
 
         val injectionComponent: InjectionComponent
             get() = app!!.mInjectionComponent!!

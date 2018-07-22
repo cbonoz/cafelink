@@ -68,6 +68,10 @@ class PrefManager(app: Application, private val gson: Gson) {
         return settings.getString(location, defaultValue)
     }
 
+    fun clear(location: String) {
+        settings.edit().remove(location).apply()
+    }
+
     @Throws(JsonParseException::class)
     fun <T> getJson(key: String, objectClass: Class<T>, defaultValue: T): T {
         val value = getString(key, null) ?: return defaultValue
@@ -75,8 +79,6 @@ class PrefManager(app: Application, private val gson: Gson) {
     }
 
     companion object {
-        private val TAG = PrefManager::class.java.simpleName
-
         private val PREF_NAME = "prefs"
     }
 

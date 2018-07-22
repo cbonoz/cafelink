@@ -1,5 +1,10 @@
 package www.cafelink.com.cafelink.models
 
-data class CafeMessage(val id: String, val userId: String, val cafeName: String, val message: String, val timestamp: Long) {
+import com.github.bassaer.chatmessageview.model.Message
 
+data class CafeMessage(val message: Message, val userId: String, val conversationId: String) {
+
+    override fun toString(): String {
+        return "CafeMessage(message=$message, userId='$userId', conversationId='$conversationId')"
+    }
 }

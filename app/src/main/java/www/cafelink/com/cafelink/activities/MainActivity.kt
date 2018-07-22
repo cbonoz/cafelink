@@ -7,9 +7,8 @@ import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import www.cafelink.com.cafelink.R
 import www.cafelink.com.cafelink.fragments.MapsFragment
-import www.cafelink.com.cafelink.fragments.MessageFragment
-import www.cafelink.com.cafelink.fragments.NotificationFragment
 import www.cafelink.com.cafelink.fragments.ProfileFragment
+import www.cafelink.com.cafelink.fragments.conversation.UserConversationFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 //                replaceFragment(NotificationFragment(), getString(R.string.title_notifications))
 //            }
             R.id.navigation_messages -> {
-                replaceFragment(MessageFragment(), getString(R.string.title_messages))
+                replaceFragment(UserConversationFragment(), getString(R.string.title_messages))
             }
             R.id.navigation_profile -> {
                 replaceFragment(ProfileFragment(), getString(R.string.title_profile))

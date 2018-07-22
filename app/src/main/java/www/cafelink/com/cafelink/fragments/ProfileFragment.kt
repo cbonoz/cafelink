@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import timber.log.Timber
 import www.cafelink.com.cafelink.CafeApplication
 
 import www.cafelink.com.cafelink.R
@@ -38,24 +39,20 @@ class ProfileFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.fragment_profile, container, false)
-        fetchUserInfo("")
+        fetchUserInfo(userSessionManager.getLoggedInUser().getId())
         return v
     }
 
     private fun fetchUserInfo(userId: String) {
         datastore.userDatabase.child("userId").equalTo(userId).addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                Timber.d("onCancelled")
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                Timber.d("onData: ${p0}")
             }
 
         })
-
-        cafeService.getUserInfoUrl(userId = userSessionManager.getLoggedInUserId())
     }
-
-
 }

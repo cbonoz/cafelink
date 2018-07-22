@@ -14,33 +14,42 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     buildTypes {
         debug {
             buildConfigField 'String', 'GoogleAPIKEY', Cafelink_GoogleKey
+            buildConfigField 'String', 'MapboxKey', Cafelink_MapboxKey
         }
         release {
             buildConfigField 'String', 'GoogleAPIKEY', Cafelink_GoogleKey
+            buildConfigField 'String', 'MapboxKey', Cafelink_MapboxKey
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
     defaultConfig {
-        manifestPlaceholders = [ googleKey: Cafelink_GoogleKey]
+        manifestPlaceholders = [googleKey: Cafelink_GoogleKey]
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.github.kittinunf.fuel:fuel-android:1.12.1'
+//    implementation 'com.github.kittinunf.fuel:fuel-android:1.12.1'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:6.3.0'
     implementation 'com.github.ybq:Android-SpinKit:1.1.0'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
     implementation 'com.github.ViksaaSkool:AwesomeSplash:v1.0.0'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.pavelsikun:materialdesignicons:1.0'
     implementation 'net.idik:slimadapter:2.1.2'
+    implementation 'com.github.bassaer:chatmessageview:1.11.2'
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:support-vector-drawable:27.1.1'
@@ -49,12 +58,11 @@ dependencies {
     implementation 'com.google.dagger:dagger-android-support:2.14.1'
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-places:0.5.0'
 
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.14.1'
     implementation 'com.facebook.android:facebook-android-sdk:4.34.0'
-    implementation 'io.github.microutils:kotlin-logging:1.5.4'
-    implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
 
     kapt 'com.google.dagger:dagger-compiler:2.14.1'
@@ -62,6 +70,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 apply plugin: 'com.google.gms.google-services'
+repositories {
+    mavenCentral()
+}

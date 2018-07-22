@@ -6,9 +6,15 @@
     tools:context=".fragments.NotificationFragment">
 
     <TextView
+        android:text="Messages"
+        android:textSize="@dimen/small_text"
+        android:layout_margin="10dp"
+        android:id="@+id/messageHeaderText"
+        android:scrollHorizontally="true"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/title_notifications" />
+        android:layout_height="wrap_content" />
 
     <FrameLayout
         android:layout_width="wrap_content"
@@ -17,16 +23,21 @@
         <com.github.ybq.android.spinkit.SpinKitView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/loading_spinner"
-            style="@style/SpinKitView.Large.MultiplePulse"
+            style="@style/SpinKitView.Large.Circle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             app:SpinKit_Color="@color/md_brown_400" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyler_view"
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/recyler_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+        <com.github.bassaer.chatmessageview.view.MessageView
+            android:id="@+id/chatMessageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
     </FrameLayout>
 
