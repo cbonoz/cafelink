@@ -86,7 +86,7 @@ class SplashActivity : AwesomeSplash() {
                     if (userName.isBlank()) {
                         Toast.makeText(this, "Username must not be empty", Toast.LENGTH_SHORT).show()
                     } else {
-                        userSessionManager.setLoggedInUser(this, User(UUID.randomUUID().toString(), userName, ""))
+                        userSessionManager.setLoggedInUser(this, User(userName))
                         dialog.dismiss()
                         proceed()
                     }

@@ -13,8 +13,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
@@ -48,6 +46,8 @@ class CafeConversationFragment : AbstractConversationFragment() {
     lateinit var datastore: Datastore
 
     lateinit var currentCafe: Data
+
+    private var writing: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +90,8 @@ class CafeConversationFragment : AbstractConversationFragment() {
                     val conversationTitle = input.toString()
                     if (conversationTitle.isBlank()) {
                         Toast.makeText(activity as Context, "Thread title must not be empty", Toast.LENGTH_SHORT).show()
-                    } else {
+                    } else if (!writing) {
+                        writing = true
                         // Successful - create the conversation thread.
                         val user = userSessionManager.getLoggedInUser()
                         val conversation = Conversation(
@@ -103,13 +104,20 @@ class CafeConversationFragment : AbstractConversationFragment() {
                         )
 
                         Timber.d("Writing new conversation: ${conversation.id}")
-                        datastore.writeConversation(conversation, OnSuccessListener {
-                            Timber.d("Created conversation: $conversation")
-                            dialog.dismiss()
-                        }, OnFailureListener {
-                            Timber.e(it, "Could not create conversation")
-                            Toast.makeText(activity as Context, "Could not create conversation: ${it.message}", Toast.LENGTH_SHORT).show()
-                        })
+                        datastore.conversationDatabase
+                                .document(conversation.id)
+                                .set(conversation)
+                                .addOnSuccessListener {
+                                    Timber.d("Created conversation: $conversation")
+                                    dialog.dismiss()
+                                    writing = false
+                                }.addOnFailureListener {
+                                    Timber.e(it, "Could not create conversation")
+                                    Toast.makeText(activity as Context, "Could not create conversation: ${it.message}", Toast.LENGTH_SHORT).show()
+                                    writing = false
+                                }
+                    } else {
+                        Toast.makeText(activity, getString(R.string.saving), Toast.LENGTH_SHORT).show()
                     }
                 }.show()
     }

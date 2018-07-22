@@ -2,14 +2,15 @@ package www.cafelink.com.cafelink.models
 
 import android.graphics.Bitmap
 import com.github.bassaer.chatmessageview.model.IChatUser
+import java.util.*
 
-class User(val userId: String, val userName: String, val iconUrl: String) : IChatUser {
+class User(var userName: String, var userId: String = UUID.randomUUID().toString(), var iconBitmap: Bitmap? = null, var iconUrl: String = "") : IChatUser {
     override fun getIcon(): Bitmap? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return iconBitmap
     }
 
     override fun setIcon(bmp: Bitmap) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        iconBitmap = bmp
     }
 
     override fun getId(): String {
@@ -18,7 +19,6 @@ class User(val userId: String, val userName: String, val iconUrl: String) : ICha
 
     override fun getName(): String? {
         return userName
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 

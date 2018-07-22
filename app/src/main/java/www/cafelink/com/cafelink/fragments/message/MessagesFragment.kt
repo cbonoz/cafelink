@@ -22,8 +22,6 @@ import www.cafelink.com.cafelink.util.Datastore
 import www.cafelink.com.cafelink.util.UserSessionManager
 import javax.inject.Inject
 import com.github.bassaer.chatmessageview.view.ChatView
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.gson.Gson
 import timber.log.Timber
 import www.cafelink.com.cafelink.models.Conversation
@@ -109,6 +107,8 @@ class MessagesFragment : Fragment() {
 
     }
 
+    private var writing: Boolean = false
+
     fun setupMessageList(v: View, messages: List<Message>) {
         mChatView = v.findViewById(R.id.chatMessageView)
 
@@ -147,7 +147,9 @@ class MessagesFragment : Fragment() {
             val text = mChatView.inputText
             if (text.isEmpty()) {
                 Toast.makeText(activity, "Message must not be empty", Toast.LENGTH_SHORT).show()
-            } else {
+            } else if (!writing) {
+                writing = true
+
                 val message = Message.Builder()
                         .setUser(me)
                         .setRight(true)
@@ -161,17 +163,35 @@ class MessagesFragment : Fragment() {
                         currentConversation.id
                 )
 
-
-                datastore.writeMessage(cafeMessage, OnSuccessListener {
-                    Timber.d("Created message: $cafeMessage")
-                    // Send to chat view.
-                    mChatView.send(message)
-                    // Reset edit text.
-                    mChatView.inputText = ""
-                }, OnFailureListener {
-                    Timber.e(it, "Could not create message")
-                    Toast.makeText(activity as Context, "Could not create message: ${it.message}", Toast.LENGTH_SHORT).show()
-                })
+                datastore.messageDatabase
+                        .document(cafeMessage.id)
+                        .set(cafeMessage)
+                        .addOnSuccessListener {
+                            Timber.d("Created message: $cafeMessage")
+                            // Update the conversation participants list.
+                            datastore.conversationDatabase
+                                    .document(currentConversation.id)
+                                    .update("participants.${cafeMessage.userId}", true)
+                                    .addOnSuccessListener {
+                                        Timber.d("Added participant: ${cafeMessage.userId}")
+                                        // Send to chat view.
+                                        mChatView.send(message)
+                                        // Reset edit text.
+                                        mChatView.inputText = ""
+                                        writing = false
+                                    }
+                                    .addOnFailureListener {
+                                        Timber.e(it, "Could not create message")
+                                        Toast.makeText(activity as Context, "Could not create message: ${it.message}", Toast.LENGTH_SHORT).show()
+                                        writing = false
+                                    }
+                        }.addOnFailureListener {
+                            Timber.e(it, "Could not create message")
+                            Toast.makeText(activity as Context, "Could not create message: ${it.message}", Toast.LENGTH_SHORT).show()
+                            writing = false
+                        }
+            } else {
+                Toast.makeText(activity, getString(R.string.saving), Toast.LENGTH_SHORT).show()
             }
         })
 
