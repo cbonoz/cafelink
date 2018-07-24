@@ -4,6 +4,7 @@
 server/node_modules
 server/node_modules/
 app/google-services.json
+app/release
 gradle.properties
 /local.properties
 /.idea/libraries

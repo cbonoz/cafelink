@@ -109,6 +109,7 @@ class MessagesFragment : Fragment() {
     fun fetchMessagesForConversation(v: View, conversation: Conversation) {
         Timber.d("fetchMessagesForConversation: %s", conversation)
         setupMessageList(v)
+        mChatView.getMessageView().removeAll()
         datastore.messageDatabase.whereEqualTo("conversationId", conversation.id).orderBy("createdAt", Query.Direction.ASCENDING)
                 .addSnapshotListener { snapshots, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
