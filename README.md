@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="screenshots/cafelink_powered.png" width="400"/>
+    <img src="screenshots/cafelink_powered.png" width="275"/>
 </p>
 
 Cafelink
