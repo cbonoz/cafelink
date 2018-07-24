@@ -4,6 +4,7 @@
 
 Cafelink
 ---
+Coffee-powered Networking
 
 Android App for connecting with other entrepreneurs at nearby cafes.
 
