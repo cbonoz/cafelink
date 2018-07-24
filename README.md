@@ -36,11 +36,12 @@ Add a the following variable (using your mapbox api key) to your `gradle.propert
 
 ### Screenshots
 
-<img src="screenshots/home.png" width="600"/>
-
-<img src="screenshots/find_cafes.png" width="300"/>
-<img src="screenshots/cafe_view.png" width="300"/>
-<img src="screenshots/new_conversation.png" width="300"/>
-<img src="screenshots/messages.png" width="300"/>
-<img src="screenshots/about.png" width="300"/>
+<p align="center">
+    <img src="screenshots/home.png" width="600"/><br>
+    <img src="screenshots/find_cafes.png" width="300"/><br>
+    <img src="screenshots/cafe_view.png" width="300"/><br>
+    <img src="screenshots/new_conversation.png" width="300"/><br>
+    <img src="screenshots/messages.png" width="300"/><br>
+    <img src="screenshots/about.png" width="300"/><br>
+</p>
 
