@@ -17,7 +17,6 @@ Initially built for the <a href="https://devcommunitychallenge.devpost.com">Face
 
 <p>Cafelink is a novel app for connecting people locally around projects by meeting and discussing at local cafe locations - powered by facebook search.</p>
 
-
 ### Dev Setup
 
 Add a the following variable (using your mapbox api key) to your `gradle.properties` file:
@@ -35,4 +34,13 @@ Add a the following variable (using your mapbox api key) to your `gradle.propert
 3. Users can see a list of messages they've received on their posts as well as reply.
 4. Users can manage their contacts and view their activity on the Cafelink app.
 
+### Screenshots
+
+<img src="screenshots/home.png" width="600"/>
+
+<img src="screenshots/find_cafes.png" width="300"/>
+<img src="screenshots/cafe_view.png" width="300"/>
+<img src="screenshots/new_conversation.png" width="300"/>
+<img src="screenshots/messages.png" width="300"/>
+<img src="screenshots/about.png" width="300"/>
 
