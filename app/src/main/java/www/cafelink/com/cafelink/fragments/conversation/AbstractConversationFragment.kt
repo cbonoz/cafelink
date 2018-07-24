@@ -58,6 +58,7 @@ abstract class AbstractConversationFragment : Fragment() {
                                 val messageFragment = MessagesFragment.makeMessageFragment(conversationString)
                                 fragmentManager!!.beginTransaction()
                                         .replace(R.id.fragment_container, messageFragment)
+                                        .addToBackStack(null)
                                         .commit()
                             }
                 }

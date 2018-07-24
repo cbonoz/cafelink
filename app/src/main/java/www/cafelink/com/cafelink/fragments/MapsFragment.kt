@@ -106,7 +106,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
         setupLocationUpdates()
         mapboxMap.setOnMarkerClickListener { it ->
-//            Toast.makeText(activity, it.title, Toast.LENGTH_LONG).show()
+            //            Toast.makeText(activity, it.title, Toast.LENGTH_LONG).show()
             val wrapInScrollView = true
             val cafeData = cafeMap[it.title]
             if (cafeData == null) {
@@ -193,7 +193,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         val locationFab = view.findViewById<FloatingActionButton>(R.id.fab_current_location);
         locationFab.setOnClickListener { it: View ->
             if (mapReady) {
-               searchWithCurrentLocation()
+                searchWithCurrentLocation()
             } else {
                 Toast.makeText(activity, "Wait for map to finish loading...", Toast.LENGTH_SHORT).show()
             };
@@ -212,8 +212,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         val cafeFragment = CafeConversationFragment()
         cafeFragment.setArguments(args)
         fragmentManager!!.beginTransaction()
-            .replace(R.id.fragment_container, cafeFragment)
-            .commit()
+                .replace(R.id.fragment_container, cafeFragment)
+                .addToBackStack(null)
+                .commit()
     }
 
     private fun makePlaceSearchRequest(location: Location? = null) {

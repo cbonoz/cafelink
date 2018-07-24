@@ -47,8 +47,16 @@ class MainActivity : AppCompatActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragment_container, fragment)
         transaction.addToBackStack(null)
-        setTitle(fragmentTitle)
-        transaction.commit()
+        title = fragmentTitle
+        transaction.addToBackStack(null).commit()
         lastFragmentSelected = fragmentTitle
+    }
+
+    override fun onBackPressed() {
+        if (fragmentManager.backStackEntryCount > 0) {
+            fragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
+        }
     }
 }
