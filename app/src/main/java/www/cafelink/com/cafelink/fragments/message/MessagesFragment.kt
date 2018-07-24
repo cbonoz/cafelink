@@ -219,7 +219,7 @@ class MessagesFragment : Fragment() {
 
     private fun addMessageToChatView(it: CafeMessage, currentUser: User) {
         if (it.userId == currentUser.id) {
-            val msg = it.toMessage(MyIChatUser(it.userId, it.userName, RIGHT_ICON), it.message, true)
+            val msg = it.toMessage(MyIChatUser(it.userId, "You", RIGHT_ICON), it.message, true)
             mChatView.send(msg)
         } else {
             val msg = it.toMessage(MyIChatUser(it.userId, it.userName, LEFT_ICON), it.message, false)

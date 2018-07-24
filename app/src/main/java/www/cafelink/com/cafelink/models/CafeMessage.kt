@@ -15,8 +15,11 @@ data class CafeMessage(val userName: String, val userId: String, val conversatio
 
 
     fun toMessage(user: IChatUser, text: String, rightSide: Boolean = true): Message {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = createdAt
         return Message.Builder()
                 .setUser(user)
+                .setSendTime(calendar)
                 .setRight(rightSide)
                 .setText(text)
                 .hideIcon(true)
