@@ -53,14 +53,15 @@ class UserConversationFragment : AbstractConversationFragment() {
     }
 
     private fun fetchConversationsForUser(userId: String) {
-        datastore.conversationDatabase.whereEqualTo("participants.${userId}", true).orderBy("lastUpdated", Query.Direction.DESCENDING)
+        val key = "participants.$userId"
+        datastore.conversationDatabase.whereGreaterThan(key, 0).orderBy(key).orderBy("lastUpdated", Query.Direction.DESCENDING)
                 .addSnapshotListener { snapshots, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
                         Timber.e(firebaseFirestoreException, "error getting conversations for userId: %s", userId)
                     } else {
-                        for (dc in snapshots!!.getDocumentChanges()) {
+                        for (dc in snapshots!!.documentChanges) {
                             val docData = dc.document.data
-                            when (dc.getType()) {
+                            when (dc.type) {
                                 DocumentChange.Type.ADDED -> {
                                     // Append the entry to the conversation list view.
                                     val conversation = gson.fromJson(gson.toJson(docData), Conversation::class.java)

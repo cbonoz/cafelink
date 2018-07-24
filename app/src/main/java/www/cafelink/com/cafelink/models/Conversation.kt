@@ -3,7 +3,7 @@ package www.cafelink.com.cafelink.models
 data class Conversation(val id: String,
                         val title: String,
                         val createdBy: User,
-                        val participants: Map<String, Boolean>,
+                        val participants: Map<String, Long>,
                         val cafeId: String,
                         val lastUpdated: Long,
                         var messageCount: Int = 0) {

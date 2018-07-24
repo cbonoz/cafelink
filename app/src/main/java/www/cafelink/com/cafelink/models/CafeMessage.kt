@@ -7,7 +7,7 @@ import java.util.*
 /*
  *
  */
-data class CafeMessage(val userName: String, val userId: String, val conversationId: String, val message: String, val id: String = UUID.randomUUID().toString()) {
+data class CafeMessage(val userName: String, val userId: String, val conversationId: String, val message: String, val createdAt: Long, val id: String = UUID.randomUUID().toString()) {
 
     override fun toString(): String {
         return "CafeMessage(message=$message, id='$userId', conversationId='$conversationId')"

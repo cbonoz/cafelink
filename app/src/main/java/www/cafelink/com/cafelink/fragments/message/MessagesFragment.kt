@@ -24,12 +24,12 @@ import www.cafelink.com.cafelink.util.Datastore
 import www.cafelink.com.cafelink.util.UserSessionManager
 import javax.inject.Inject
 import com.github.bassaer.chatmessageview.view.ChatView
+import com.github.ybq.android.spinkit.SpinKitView
 import com.google.gson.Gson
 import timber.log.Timber
 import www.cafelink.com.cafelink.models.Conversation
 import www.cafelink.com.cafelink.models.MyIChatUser
 import www.cafelink.com.cafelink.models.User
-import java.util.*
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.Query
 import kotlin.collections.ArrayList
@@ -67,6 +67,8 @@ class MessagesFragment : Fragment() {
     lateinit var currentUser: User
     lateinit var currentIChatUser: IChatUser
 
+    lateinit var loadingSpinner: SpinKitView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         CafeApplication.injectionComponent.inject(this)
@@ -84,6 +86,8 @@ class MessagesFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.fragment_message_list, container, false)
+        loadingSpinner = v.findViewById(R.id.loading_spinner)
+        loadingSpinner.visibility = View.VISIBLE
         val args = arguments
         val conversationString = args?.getString(CafeApplication.CONVERSATION_DATA, null)
         if (conversationString == null) {
@@ -92,8 +96,8 @@ class MessagesFragment : Fragment() {
             try {
                 currentConversation = gson.fromJson(conversationString, Conversation::class.java)
                 fetchMessagesForConversation(v, currentConversation)
-                val messageHeader = v.findViewById<TextView>(R.id.messageHeaderText)
-                messageHeader.text = currentConversation.title
+//                val headerText = v.findViewById<TextView>(R.id.headerText)
+//                headerText.text = "Conversation: ${currentConversation.title}"
 
             } catch (e: Exception) {
                 Toast.makeText(activity, getString(R.string.conversation_fail), Toast.LENGTH_SHORT).show()
@@ -105,14 +109,15 @@ class MessagesFragment : Fragment() {
     fun fetchMessagesForConversation(v: View, conversation: Conversation) {
         Timber.d("fetchMessagesForConversation: %s", conversation)
         data.clear()
-        datastore.messageDatabase.whereEqualTo("conversationId", conversation.id).orderBy("lastUpdated", Query.Direction.DESCENDING)
+        datastore.messageDatabase.whereEqualTo("conversationId", conversation.id).orderBy("createdAt", Query.Direction.DESCENDING)
                 .addSnapshotListener { snapshots, firebaseFirestoreException ->
                     if (firebaseFirestoreException != null) {
                         Timber.e(firebaseFirestoreException, "error getting messages for conversationId: %s", conversation.id)
+                        Toast.makeText(activity as Context, "Could not fetch messages, try again later", Toast.LENGTH_SHORT).show()
                     } else {
-                        for (dc in snapshots!!.getDocumentChanges()) {
+                        for (dc in snapshots!!.documentChanges) {
                             val docData = dc.document.data
-                            when (dc.getType()) {
+                            when (dc.type) {
                                 DocumentChange.Type.ADDED -> {
                                     // Append the entry to the conversation list view.
                                     val message = gson.fromJson(gson.toJson(docData), CafeMessage::class.java)
@@ -164,6 +169,7 @@ class MessagesFragment : Fragment() {
             }
         }
 
+        loadingSpinner.visibility = View.GONE
         mChatView.visibility = VISIBLE
 
         //Click Send Button
@@ -180,7 +186,8 @@ class MessagesFragment : Fragment() {
                         currentUser.name,
                         currentUser.id,
                         currentConversation.id,
-                        text
+                        text,
+                        System.currentTimeMillis()
                 )
 
                 datastore.messageDatabase
@@ -190,13 +197,15 @@ class MessagesFragment : Fragment() {
                             Timber.d("Created message: $cafeMessage")
                             // Update the conversation participants list.
                             val updateMap = HashMap<String, Any>()
-                            updateMap["participants.${cafeMessage.userId}"] = true
+                            val userId = cafeMessage.userId
+                            updateMap["participants.$userId"] = 1502144665L // used for index + orderBy (firestore specific).
                             updateMap["messageCount"] = currentConversation.messageCount + 1
+                            updateMap["lastUpdated"] = System.currentTimeMillis()
                             datastore.conversationDatabase
                                     .document(currentConversation.id)
                                     .update(updateMap)
                                     .addOnSuccessListener {
-                                        Timber.d("Added message for user: ${cafeMessage.userId}")
+                                        Timber.d("Added message for user: $userId")
                                         // Send to chat view.
                                         val msg = cafeMessage.toMessage(currentIChatUser, text, true)
                                         mChatView.send(msg)

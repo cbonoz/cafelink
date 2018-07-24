@@ -99,8 +99,8 @@ class CafeConversationFragment : AbstractConversationFragment() {
                         writing = true
                         // Successful - create the conversation thread.
                         val user = userSessionManager.getLoggedInUser()
-                        val userMap = HashMap<String, Boolean>()
-                        userMap[user.id] = true
+                        val userMap = HashMap<String, Long>()
+                        userMap[user.id] = 1502144665L // used for firestore index.
                         val conversation = Conversation(
                                 UUID.randomUUID().toString(),
                                 conversationTitle,

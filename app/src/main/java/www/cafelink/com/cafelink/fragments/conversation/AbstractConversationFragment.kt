@@ -53,7 +53,6 @@ abstract class AbstractConversationFragment : Fragment() {
                             .text(R.id.lastUpdated, "Last Updated: $lastUpdatedDate")
                             .text(R.id.messageCountText, "${data.messageCount}")
                             .clicked(R.id.messageLayout) {
-                                Toast.makeText(activity, "clicked message: ${data.id}", Toast.LENGTH_LONG).show()
                                 Timber.d("Clicked conversation: $data")
                                 val conversationString = gson.toJson(data)
                                 val messageFragment = MessagesFragment.makeMessageFragment(conversationString)
