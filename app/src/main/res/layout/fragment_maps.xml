@@ -34,4 +34,16 @@
         app:backgroundTint="@color/md_red_500"
         app:srcCompat="@drawable/zzz_star_circle"/>
 
+    <Button
+        android:id="@+id/searchAgainButton"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="5dp"
+        android:text="Search Again"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="15dp"
+        android:paddingStart="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </android.support.design.widget.CoordinatorLayout>

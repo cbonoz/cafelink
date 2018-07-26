@@ -8,6 +8,7 @@ import www.cafelink.com.cafelink.activities.SplashActivity
 import www.cafelink.com.cafelink.fragments.*
 import www.cafelink.com.cafelink.fragments.conversation.AbstractConversationFragment
 import www.cafelink.com.cafelink.fragments.conversation.CafeConversationFragment
+import www.cafelink.com.cafelink.fragments.conversation.RecentConversationFragment
 import www.cafelink.com.cafelink.fragments.conversation.UserConversationFragment
 import www.cafelink.com.cafelink.fragments.message.MessagesFragment
 
@@ -23,6 +24,7 @@ interface InjectionComponent {
 
     fun inject(cafeConversationFragment: CafeConversationFragment)
     fun inject(userConversationFragment: UserConversationFragment)
+    fun inject(recentConversationFragment: RecentConversationFragment)
     fun inject(messagesFragment: MessagesFragment)
     fun inject(abstractConversationFragment: AbstractConversationFragment)
     fun inject(mapsFragment: MapsFragment)

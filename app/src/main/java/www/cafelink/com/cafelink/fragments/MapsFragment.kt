@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -34,6 +35,7 @@ import com.mapbox.geojson.Point
 
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.annotations.IconFactory
+import com.mapbox.mapboxsdk.annotations.Marker
 import com.mapbox.mapboxsdk.annotations.MarkerOptions
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory
@@ -77,6 +79,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     private val symbolIconId = "symbolIconId";
 
     private lateinit var mapView: MapView
+    private lateinit var searchAgainButton: Button
 
     @Inject
     lateinit var gson: Gson
@@ -96,6 +99,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         mapView = v.findViewById<MapView>(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this)
+        searchAgainButton = v.findViewById<Button>(R.id.searchAgainButton)
+        searchAgainButton.visibility = View.INVISIBLE
         initFabButtons(v);
         return v
     }
@@ -103,12 +108,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(mapboxMap: MapboxMap) {
         this.mapboxMap = mapboxMap
         mapReady = true
+        searchAgainButton.setOnClickListener {
+            searchCurrentLocation()
+            searchAgainButton.visibility = View.INVISIBLE
+        }
 
         setupLocationUpdates()
         mapboxMap.setOnMarkerClickListener { it ->
             //            Toast.makeText(activity, it.title, Toast.LENGTH_LONG).show()
             val wrapInScrollView = true
-            val cafeData = cafeMap[it.title]
+            val cafeData = cafeMap[it.snippet]
             if (cafeData == null) {
                 Toast.makeText(activity as Context, "No Detail Available", Toast.LENGTH_SHORT).show()
             } else {
@@ -148,6 +157,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             true
 
         }
+
+        mapboxMap.addOnCameraIdleListener {
+            markers.map {
+                it.hideInfoWindow()
+            }
+            searchAgainButton.visibility = View.VISIBLE
+        }
         // Add the symbol layer icon to map for future use
 //        val icon = BitmapFactory.decodeResource(resources, R.drawable.blue_marker_view);
 //        mapboxMap.addImage(symbolIconId, icon);
@@ -157,6 +173,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
         // Set up a new symbol layer for displaying the searched location's feature coordinates
         setupLayer();
+    }
+
+    private fun searchCurrentLocation() {
+        val target = mapboxMap.cameraPosition.target
+        updatePositionAndSearch(target)
     }
 
 
@@ -196,8 +217,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 searchWithCurrentLocation()
             } else {
                 Toast.makeText(activity, "Wait for map to finish loading...", Toast.LENGTH_SHORT).show()
-            };
+            }
         }
+
     }
 
     // Open the cafe message fragment when the user clicks on a cafe marker.
@@ -218,7 +240,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun makePlaceSearchRequest(location: Location? = null) {
-        cafeMap.clear()
+//        cafeMap.clear()
         mapboxMap.clear()
         val searchRequest = createSearchRequest(SEARCH_RADIUS_METERS)
 
@@ -401,6 +423,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         mapView.onResume()
     }
 
+    private var markers: List<Marker> = ArrayList()
+
     inner class PlaceSearchRequestCallback(private val gson: Gson) : PlaceManager.OnRequestReadyCallback, GraphRequest.Callback {
 
         override fun onLocationError(error: PlaceManager.LocationError?) {
@@ -431,18 +455,21 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
             val iconFactory = IconFactory.getInstance(app!!);
 
-            cafeResponse.data.map {
+            markers = cafeResponse.data.map {
                 val icon = iconFactory.fromResource(R.drawable.blue_marker_view_40);
                 val options = MarkerOptions()
                         .position(LatLng(it.location.latitude, it.location.longitude))
                         .icon(icon)
-                        .title(it.name)
+//                        .title(it.name)
                         .snippet(it.name)
 
                 cafeMap[it.name] = it
 
-                mapboxMap.addMarker(options)
+                val marker = mapboxMap.addMarker(options)
+                marker.showInfoWindow(mapboxMap, mapView)
+                marker
             }
+
         }
     }
 }

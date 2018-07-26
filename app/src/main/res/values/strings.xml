@@ -24,5 +24,7 @@
         Share what you are working on, start discussions, and meet new people all from a single app.</string>
     <string name="your_conversations">Your Conversations</string>
     <string name="username">Username..</string>
+    <string name="live">Live</string>
+    <string name="title_recent">Recent</string>
 
 </resources>

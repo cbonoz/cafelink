@@ -8,6 +8,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import www.cafelink.com.cafelink.R
 import www.cafelink.com.cafelink.fragments.MapsFragment
 import www.cafelink.com.cafelink.fragments.ProfileFragment
+import www.cafelink.com.cafelink.fragments.conversation.RecentConversationFragment
 import www.cafelink.com.cafelink.fragments.conversation.UserConversationFragment
 
 class MainActivity : AppCompatActivity() {
@@ -19,10 +20,9 @@ class MainActivity : AppCompatActivity() {
             R.id.navigation_explore -> {
                 replaceFragment(MapsFragment(), getString(R.string.title_explore))
             }
-            // TODO: add the notifications fragment
-//            R.id.navigation_notifications -> {
-//                replaceFragment(NotificationFragment(), getString(R.string.title_notifications))
-//            }
+            R.id.navigation_recent -> {
+                replaceFragment(RecentConversationFragment(), getString(R.string.title_recent))
+            }
             R.id.navigation_messages -> {
                 replaceFragment(UserConversationFragment(), getString(R.string.title_messages))
             }
