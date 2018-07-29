@@ -148,7 +148,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
                 Glide.with(this)
                         .load(pictureData.url)
-                        .into(imageView);
+                        .into(imageView)
 
 //                val detailString = "Information\n$cafeData"
 
@@ -466,7 +466,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 cafeMap[it.name] = it
 
                 val marker = mapboxMap.addMarker(options)
-                marker.showInfoWindow(mapboxMap, mapView)
+                if (mapReady) {
+                    marker.showInfoWindow(mapboxMap, mapView)
+                }
                 marker
             }
 

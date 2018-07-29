@@ -1,5 +1,7 @@
 package www.cafelink.com.cafelink.models.cafe
 
+import www.cafelink.com.cafelink.models.ConversationCafe
+
 data class Data(
         val hours: List<Hour>?,
         val name: String,
@@ -9,6 +11,10 @@ data class Data(
         val id: String
 ) {
 
+    // reduced cafe representations
+    fun toConversationCafe(): ConversationCafe {
+        return ConversationCafe(name, phone, location, picture)
+    }
 
     fun getInfo(): String {
         val cafeString = StringBuilder()

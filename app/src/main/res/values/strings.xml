@@ -26,5 +26,7 @@
     <string name="username">Username..</string>
     <string name="live">Live</string>
     <string name="title_recent">Recent</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

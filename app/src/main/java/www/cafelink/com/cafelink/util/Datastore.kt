@@ -21,6 +21,7 @@ class Datastore(val gson: Gson) {
     // Contains 'User' class objects as json (with id index).
     val userDatabase = database.collection("users") // users in the app
 
+    val cafeDatabase = database.collection("cafes") // cafes with active conversations
 
     fun toMessageMap(cafeMessage: CafeMessage) : Map<String, Any> {
         val cafeString = gson.toJson(cafeMessage)

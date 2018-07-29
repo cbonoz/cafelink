@@ -12,6 +12,6 @@ data class Location(
 
 ) {
     override fun toString(): String {
-        return "$street\n$city, $state\n$country $zip"
+        return "$street\n$city, $state\n$country $zip".replace("null", "", true)
     }
 }

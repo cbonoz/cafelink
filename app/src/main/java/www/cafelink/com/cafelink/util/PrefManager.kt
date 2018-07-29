@@ -26,7 +26,7 @@ class PrefManager(app: Application, private val gson: Gson) {
     fun saveString(location: String, value: String?) {
         val editor = settings.edit()
         editor.putString(location, value)
-        editor.apply()
+        editor.commit()
     }
 
     fun saveLong(location: String, value: Long) {

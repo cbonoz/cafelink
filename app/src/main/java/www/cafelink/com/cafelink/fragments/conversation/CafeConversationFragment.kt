@@ -108,7 +108,8 @@ class CafeConversationFragment : AbstractConversationFragment() {
                                 userMap,
                                 currentCafe.id,
                                 System.currentTimeMillis(),
-                                0
+                                0,
+                                currentCafe.toConversationCafe()
                         )
 
                         Timber.d("Writing new conversation: ${conversation.id}")

@@ -1,22 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/loading_spinner"
-        style="@style/SpinKitView.Large.Circle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        app:SpinKit_Color="@color/md_brown_400" />
-
-    <com.github.bassaer.chatmessageview.view.ChatView
-        android:id="@+id/chatMessageView"
+    <www.cafelink.com.cafelink.ConversationHeaderView
+        android:id="@+id/conversationHeaderView"
+        android:clickable="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="5dp"
-        android:visibility="gone" />
+        android:layout_height="wrap_content"
+        android:focusable="true" />
 
-</FrameLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/loading_spinner"
+            style="@style/SpinKitView.Large.Circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:SpinKit_Color="@color/md_brown_400" />
+
+        <com.github.bassaer.chatmessageview.view.ChatView
+            android:id="@+id/chatMessageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="5dp"
+            android:visibility="gone" />
+
+    </FrameLayout>
+</LinearLayout>

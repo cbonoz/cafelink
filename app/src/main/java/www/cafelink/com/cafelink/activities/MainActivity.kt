@@ -40,10 +40,10 @@ class MainActivity : AppCompatActivity() {
         replaceFragment(MapsFragment(), getString(R.string.title_explore))
     }
 
-    private fun replaceFragment(fragment: Fragment, fragmentTitle: String) {
-        if (fragmentTitle == lastFragmentSelected) {
-            return
-        }
+    fun replaceFragment(fragment: Fragment, fragmentTitle: String) {
+//        if (fragmentTitle == lastFragmentSelected) {
+//            return
+//        }
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragment_container, fragment)
         transaction.addToBackStack(null)

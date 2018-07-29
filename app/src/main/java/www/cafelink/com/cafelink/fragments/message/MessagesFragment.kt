@@ -11,9 +11,11 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
+import com.afollestad.materialdialogs.MaterialDialog
 import com.github.bassaer.chatmessageview.model.IChatUser
 import net.idik.lib.slimadapter.SlimAdapter
 import www.cafelink.com.cafelink.CafeApplication
@@ -31,6 +33,12 @@ import www.cafelink.com.cafelink.models.MyIChatUser
 import www.cafelink.com.cafelink.models.User
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.Query
+import kotlinx.android.synthetic.main.fragment_message_list.*
+import www.cafelink.com.cafelink.CafeApplication.Companion.LAST_LOCATION_LOC
+import www.cafelink.com.cafelink.activities.MainActivity
+import www.cafelink.com.cafelink.fragments.MapsFragment
+import www.cafelink.com.cafelink.models.cafe.Location
+import www.cafelink.com.cafelink.util.PrefManager
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -58,6 +66,8 @@ class MessagesFragment : Fragment() {
 
     @Inject
     lateinit var gson: Gson
+    @Inject
+    lateinit var prefManager: PrefManager
     @Inject
     lateinit var userSessionManager: UserSessionManager
     @Inject
@@ -104,6 +114,40 @@ class MessagesFragment : Fragment() {
             }
         }
         return v
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val currentCafe = currentConversation.cafe
+        if (currentCafe != null) {
+            conversationHeaderView.setCafe(currentCafe)
+            if (activity is MainActivity) {
+                conversationHeaderView.setOnClickListener {
+                    MaterialDialog.Builder(activity as Context)
+                            .title("Go to Cafe")
+                            .content("Clicking ok will find ${currentCafe.name} and open it back in the Map View")
+                            .positiveText(R.string.ok)
+                            .autoDismiss(false)
+                            .onPositive { dialog, which ->
+                                dialog.dismiss()
+                                goToCafe(currentCafe.location)
+                            }
+                            .negativeText(R.string.cancel)
+                            .onNegative { dialog, which ->
+                                dialog.dismiss()
+                            }
+                            .show();
+                }
+            }
+        } else {
+            conversationHeaderView.visibility = GONE
+        }
+
+    }
+
+    private fun goToCafe(location: Location) {
+        prefManager.saveJson(LAST_LOCATION_LOC, location)
+        (activity as MainActivity).replaceFragment(MapsFragment(), getString(R.string.title_explore))
     }
 
     fun fetchMessagesForConversation(v: View, conversation: Conversation) {
